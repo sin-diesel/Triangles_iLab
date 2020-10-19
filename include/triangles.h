@@ -11,6 +11,7 @@ public:
     
     point_t(float x, float y, float z);
     point_t() = default;
+    void print_point();
     //~point_t();
 
 };
@@ -22,8 +23,13 @@ public:
     point_t p1_;
     point_t p2_;
 
+    float x_ = NAN;
+    float y_ = NAN;
+    float z_ = NAN;
+
     float len = NAN;
 
+    void print_vector();
     vector_t() = default;
     vector_t(const point_t& p1, const point_t& p2);
 };
@@ -36,6 +42,24 @@ public:
     line_t(const vector_t& a);
     line_t(const point_t& p1, const point_t& p2);
 
-    bool is_valid();
 };
+
+struct triangle_t {
+public:
+    point_t p1_;
+    point_t p2_;
+    point_t p3_;
+    vector_t vec_1;
+    vector_t vec_2;
+    vector_t vec_3;
+
+    triangle_t(const point_t& p1, const point_t& p2, const point_t& p3);
+    bool is_valid();
+    void print_triangle();
+    float square();
+};
+
+void test_triangle();
+
+void test();
 
