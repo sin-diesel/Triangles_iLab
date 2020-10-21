@@ -24,12 +24,14 @@ public:
 
 struct vector_t:public Printable {
 public:
-    point_t p_1_;
-    point_t p_2_;
-    point_t p_3_;
+    point_t p1_;
+    point_t p2_;
+
+    float x_, y_, z_ = NAN;
 
     vector_t() = default;
-    vector_t(point_t const p1, point_t const p2, point_t const p3);
+    vector_t(point_t const p1, point_t const p2);
+    vector_t(float x, float y, float z);
     ~vector_t() = default;
 
     void print() const override;
