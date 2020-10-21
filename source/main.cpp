@@ -5,6 +5,7 @@
 int main() {
 
     test();
-
+    acquire_input();
+    
     return 0;
 }
