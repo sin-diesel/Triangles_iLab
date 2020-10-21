@@ -4,62 +4,36 @@
 
 #define TOLERANCE 1e-7
 
-struct point_t {
+struct Printable {
+public:
+    virtual void print() const = 0;
+    virtual ~Printable() {};
+};
+
+struct point_t: public Printable {
 public:
     float x_ = NAN, y_ = NAN, z_ = NAN;
-    bool is_equal(const point_t& rhs) const;
-    
-    point_t(float x, float y, float z);
+
     point_t() = default;
-    void print_point();
-    //~point_t();
+    point_t(float x, float y, float z);
+    ~point_t() = default;
 
+    bool is_equal(const point_t& rhs) const;
+    void print() const override;
 };
 
-void test_points();
-
-struct vector_t {
+struct vector_t:public Printable {
 public:
-    point_t p1_;
-    point_t p2_;
+    point_t p_1_;
+    point_t p_2_;
+    point_t p_3_;
 
-    float x_ = NAN;
-    float y_ = NAN;
-    float z_ = NAN;
-
-    float len = NAN;
-
-    void print_vector();
     vector_t() = default;
-    vector_t(const point_t& p1, const point_t& p2);
-};
+    vector_t(point_t const p1, point_t const p2, point_t const p3);
+    ~vector_t() = default;
 
-void test_vector();
-
-struct line_t {
-public:
-    vector_t vector;
-    line_t(const vector_t& a);
-    line_t(const point_t& p1, const point_t& p2);
+    void print() const override;
 
 };
-
-struct triangle_t {
-public:
-    point_t p1_;
-    point_t p2_;
-    point_t p3_;
-    vector_t vec_1;
-    vector_t vec_2;
-    vector_t vec_3;
-
-    triangle_t(const point_t& p1, const point_t& p2, const point_t& p3);
-    bool is_valid();
-    void print_triangle();
-    float square();
-};
-
-void test_triangle();
 
 void test();
-
