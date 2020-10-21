@@ -80,24 +80,11 @@ float vector_t::len() const {
     return sqrtf(x_ * x_ + y_ * y_ + z_ * z_);
 }
 
-vector_t cross_product(const vector_t& lhs, const vector_t& rhs) {
-    float x, y, z = NAN;
-
-    x = lhs.y_ * rhs.z_ - lhs.z_ * rhs.y_;
-    y = lhs.z_ * rhs.x_ - lhs.x_ * rhs.z_;
-    z = lhs.x_ * rhs.y_ - lhs.y_ * rhs.x_;
-
-    return vector_t(x, y, z);
-}
 
 void vector_t::print() const {
     fprintf(stderr, "--------------\n");
     fprintf(stderr, "Vector %p: (%f, %f, %f)\n", this, x_, y_, z_);
     fprintf(stderr, "--------------\n");
-}
-
-vector_t plane_intersection(const plane_t& lhs, const plane_t& rhs) {
-    return cross_product(lhs.norm, rhs.norm);
 }
 
 // triangle constructor through 3 points
@@ -341,6 +328,20 @@ float compute_distance(const plane_t& plane, const point_t& point) {
     plane.norm.print();
 
     return (scalar_multiplication(plane.norm, v) + plane.d) / (1.0 * norm_len);
+}
+
+vector_t cross_product(const vector_t& lhs, const vector_t& rhs) {
+    float x, y, z = NAN;
+
+    x = lhs.y_ * rhs.z_ - lhs.z_ * rhs.y_;
+    y = lhs.z_ * rhs.x_ - lhs.x_ * rhs.z_;
+    z = lhs.x_ * rhs.y_ - lhs.y_ * rhs.x_;
+
+    return vector_t(x, y, z);
+}
+
+vector_t plane_intersection(const plane_t& lhs, const plane_t& rhs) {
+    return cross_product(lhs.norm, rhs.norm);
 }
 
 bool triangle_intersection(const triangle_t& rhs, const triangle_t& lhs) {

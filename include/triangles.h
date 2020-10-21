@@ -42,10 +42,6 @@ public:
 
 };
 
-vector_t cross_product(const vector_t& lhs, const vector_t& rhs);
-
-vector_t plane_intersection(const plane_t& lhs, const plane_t& rhs);
-
 //---------------------- Triangle
 struct triangle_t:public Printable {
 public:
@@ -88,4 +84,8 @@ void test();
 void acquire_input();
 
 float scalar_multiplication(const vector_t& rhs, const vector_t& lhs);
+
+vector_t cross_product(const vector_t& lhs, const vector_t& rhs);
+
+vector_t plane_intersection(const plane_t& lhs, const plane_t& rhs);
 
