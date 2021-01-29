@@ -26,6 +26,10 @@ class Vector {
     float m_x = NAN, m_y = NAN, m_z = NAN;
 public:
     Vector(float x, float y, float z): m_x(x), m_y(y), m_z(z) {};
+    Vector(const Point& p1, const Point& p2);
+    Vector(const Vector& rhs) = default;
+
+    Vector& operator*=(float num);
 
     bool is_equal(const Vector& rhs) const;
     std::vector<float> get_coordinates() const;
@@ -42,6 +46,16 @@ public:
 };
 
 bool operator==(const Point& p1, const Point& p2);
+
+/*---------------------------------------------------------------*/
+bool operator==(const Vector& v1, const Vector& v2);
+
+/*---------------------------------------------------------------*/
+Vector operator*(const Vector& lhs, float num);
+
+/*---------------------------------------------------------------*/
+Vector operator*(float num, const Vector& rhs);
+
 //---------------------- Plane
 // struct plane_t:public Printable {
 

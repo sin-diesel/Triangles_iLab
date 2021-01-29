@@ -18,6 +18,32 @@ bool operator==(const Point& p1, const Point& p2) {
 }
 
 /*---------------------------------------------------------------*/
+bool operator==(const Vector& v1, const Vector& v2) {
+    return v1.is_equal(v2);
+}
+
+Vector& Vector::operator*=(float num) {
+    m_x *= num;
+    m_y *= num;
+    m_z *= num;
+    return *this;
+}
+
+/*---------------------------------------------------------------*/
+Vector operator*(const Vector& lhs, float num) {
+    Vector result = lhs;
+    result *= num;
+    return result;
+}
+
+/*---------------------------------------------------------------*/
+Vector operator*(float num, const Vector& rhs) {
+    return rhs * num;
+}
+
+
+
+/*---------------------------------------------------------------*/
 Vector operator+(const Vector& lhs, const Vector& rhs) {
     std::vector<float> l_coord = lhs.get_coordinates();
     std::vector<float> r_coord = rhs.get_coordinates();
@@ -54,6 +80,16 @@ std::vector<float> Vector::get_coordinates() const {
 std::vector<float> Point::get_coordinates() const {
     std::vector<float> coordinates = {m_x, m_y, m_z};
     return coordinates;
+}
+
+Vector::Vector(const Point& p1, const Point& p2) {
+    std::vector<float> begin = p1.get_coordinates();
+    std::vector<float> end = p2.get_coordinates();
+    
+    m_x = end[0] - begin[0];
+    m_y = end[1] - begin[1];
+    m_z = end[2] - begin[2];
+
 }
 
 // float Vector::len() const {

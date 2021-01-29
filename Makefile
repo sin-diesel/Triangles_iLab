@@ -7,7 +7,7 @@ INCL_DIR = include
 SOURCES = main.cpp unit_tests.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 
-.PHONY: all unittests triangles
+.PHONY: all unittests triangles *.o
 all: main.o triangles.o
 	$(CPP) $(CPPFLAGS) main.o triangles.o -o triangles
 
