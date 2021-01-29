@@ -1,91 +1,70 @@
-#include <iostream>
-#include <stdlib.h>
-#include <math.h>
+#include <cmath>
 
-#define TOLERANCE 1e-6
 
-//----------------------
-struct Printable {
+#define DEBUG false
+// #define ASSERT(test) std::cerr << #test << "FAILED" << std::endl; \
+//                     std::cerr << "ERROR AT LINE: " << __LINE__ << " FUNCTION: " << __func__ << std::endl; \
+
+/* Debugging macro */
+#define D(expr) if (DEBUG) {expr;};
+
+/* Comparison tolerance */
+#define TOLERANCE 1e-5
+
+/*---------------------------------------------------------------*/
+class Point {
+    float m_x = NAN, m_y = NAN, m_z = NAN;
 public:
-    virtual void print() const = 0;
-    virtual ~Printable() {};
+    Point(float x, float y, float z): m_x(x), m_y(y), m_z(z) {};
+
+    bool is_equal(const Point& rhs) const;
+    std::vector<float> get_coordinates() const;
 };
 
-//---------------------- Point
-struct point_t: public Printable {
+/*---------------------------------------------------------------*/
+class Vector {
+    float m_x = NAN, m_y = NAN, m_z = NAN;
 public:
-    float x_ = NAN, y_ = NAN, z_ = NAN;
+    Vector(float x, float y, float z): m_x(x), m_y(y), m_z(z) {};
 
-    point_t() = default;
-    point_t(float x, float y, float z);
-    ~point_t() = default;
-
-    bool is_equal(const point_t& rhs) const;
-    void print() const override;
+    bool is_equal(const Vector& rhs) const;
+    std::vector<float> get_coordinates() const;
 };
 
-//---------------------- Vector
+/*---------------------------------------------------------------*/
+class Triangle {
+    Point m_p1;
+    Point m_p2;
+    Point m_p3;
 
-struct vector_t:public Printable {
 public:
-
-    float x_, y_, z_ = NAN;
-
-    vector_t() = default;
-    ~vector_t() = default;
-    vector_t(point_t const p1, point_t const p2);
-    vector_t(float x, float y, float z);
-
-    bool is_equal(const vector_t& rhs) const;
-    void print() const override;
-    float len() const;
-
+    Triangle(const Point& p1, const Point& p2, const Point& p3);
 };
 
-//---------------------- Triangle
-struct triangle_t:public Printable {
-public:
-
-    point_t v1_;
-    point_t v2_;
-    point_t v3_;
-
-    vector_t a1_;
-    vector_t a2_;
-    vector_t a3_;
-
-    triangle_t() = default;
-    triangle_t(const vector_t& a1, const vector_t& a2);
-    triangle_t(const point_t& p1, const point_t& p2, const point_t& p3);
-
-    bool is_equal(const triangle_t& rhs) const;
-    bool is_valid() const;
-    void print() const override;
-
-};
+bool operator==(const Point& p1, const Point& p2);
 //---------------------- Plane
-struct plane_t:public Printable {
+// struct plane_t:public Printable {
 
-    vector_t norm;
-    float a, b, c, d = NAN;
+//     vector_t norm;
+//     float a, b, c, d = NAN;
 
-    plane_t(const vector_t& vec1, const vector_t& vec2, const point_t& point);
-    void print() const override;
-    bool is_equal(const plane_t& rhs) const;
-};
+//     plane_t(const vector_t& vec1, const vector_t& vec2, const point_t& point);
+//     void print() const override;
+//     bool is_equal(const plane_t& rhs) const;
+// };
 
 
-bool triangle_intersection(const triangle_t& rhs, const triangle_t& lhs);
+// bool triangle_intersection(const triangle_t& rhs, const triangle_t& lhs);
 
-float compute_distance(const plane_t& plane, const point_t& point);
+// float compute_distance(const plane_t& plane, const point_t& point);
 
-void test();
+// void test();
 
-void acquire_input();
+// void acquire_input();
 
-float scalar_multiplication(const vector_t& rhs, const vector_t& lhs);
+// float scalar_multiplication(const vector_t& rhs, const vector_t& lhs);
 
-vector_t cross_product(const vector_t& lhs, const vector_t& rhs);
+// vector_t cross_product(const vector_t& lhs, const vector_t& rhs);
 
-vector_t plane_intersection(const plane_t& lhs, const plane_t& rhs);
+// vector_t plane_intersection(const plane_t& lhs, const plane_t& rhs);
 

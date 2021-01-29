@@ -1,11 +1,7 @@
 #include <iostream>
-#include <math.h>
-#include "../include/triangles.h"
+#include "triangles.h"
 
-int main() {
+int main(int argc, char** argv) {
 
-    test();
-    acquire_input();
-    
     return 0;
 }
