@@ -1,15 +1,24 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
-#include <fstream>
 #include "triangles.h"
 
+
+//using namespace Geometry;
 
 /*---------------------------------------------------------------*/
 bool Point::is_equal(const Point& rhs) const {
     return std::abs(m_x - rhs.m_x) < TOLERANCE && \
            std::abs(m_y - rhs.m_y) < TOLERANCE && \
            std::abs(m_z - rhs.m_z) < TOLERANCE ? true : false;
+}
+
+/*---------------------------------------------------------------*/
+std::ostream& operator<<(std::ostream& stream, const Point& rhs) {
+    std::vector<float> coordinates = rhs.get_coordinates();
+    stream << "(" << coordinates[0] << ", " << coordinates[1] << ", " <<
+                        coordinates[2] << ")" << std::endl;
+    return stream;
 }
 
 /*---------------------------------------------------------------*/
@@ -20,6 +29,11 @@ bool operator==(const Point& p1, const Point& p2) {
 /*---------------------------------------------------------------*/
 bool operator==(const Vector& v1, const Vector& v2) {
     return v1.is_equal(v2);
+}
+
+/*---------------------------------------------------------------*/
+bool operator==(const Triangle& t1, const Triangle& t2) {
+    return t1.is_equal(t2);
 }
 
 Vector& Vector::operator*=(float num) {
@@ -40,7 +54,6 @@ Vector operator*(const Vector& lhs, float num) {
 Vector operator*(float num, const Vector& rhs) {
     return rhs * num;
 }
-
 
 
 /*---------------------------------------------------------------*/
@@ -92,6 +105,53 @@ Vector::Vector(const Point& p1, const Point& p2) {
 
 }
 
+/*---------------------------------------------------------------*/
+Triangle::Triangle(const Point& p1, const Point& p2, const Point& p3): m_p1(p1), \
+                                                                       m_p2(p2), \
+                                                                       m_p3(p3) {}; \
+
+
+/*---------------------------------------------------------------*/
+Triangle::Triangle(const Point& p, const Vector& v1, const Vector& v2): m_p1(p) {
+    std::vector<float> from = p.get_coordinates();
+    std::vector<float> end_1 = v1.get_coordinates();
+    std::vector<float> end_2 = v2.get_coordinates();
+
+    /* calculate other points coordinates */
+    float x2 = from[0] + end_1[0];
+    float y2 = from[1] + end_1[1];
+    float z2 = from[2] + end_1[2];
+    float x3 = from[0] + end_2[0];
+    float y3 = from[1] + end_2[1];
+    float z3 = from[2] + end_2[2];
+
+    m_p2 = Point(x2, y2, z2);
+    m_p3 = Point(x3, y3, z3);
+
+}
+
+/*---------------------------------------------------------------*/
+// std::vector<const Point&> Triangle::get_points() {
+
+// }
+
+/*---------------------------------------------------------------*/
+bool Triangle::is_equal(const Triangle& rhs) const {
+    if (m_p1.is_equal(rhs.m_p1) && m_p2.is_equal(rhs.m_p2) && m_p3.is_equal(rhs.m_p3)) {
+        return true;
+    }
+    return false;
+}
+
+void Triangle::dump() const {
+    std::cout << "Dumping triangle: " << this << std::endl;
+    std::cout << "Point 1: " << m_p1 << std::endl;
+    std::cout << "Point 2: " << m_p2 << std::endl;
+    std::cout << "Point 3: " << m_p3 << std::endl;
+}
+
+
+
 // float Vector::len() const {
 //     return sqrtf(m_x * m_x + m_y * m_y + m_z * m_z);
 // }
@@ -109,13 +169,6 @@ Vector::Vector(const Point& p1, const Point& p2) {
 // Triangle::Triangle(const Point& p1, const Point& p2, const Point& p3): m_p1(p1), \
 //                                                                        m_p2(p2), \
 //                                                                        m_p3(p3) {};
-
-// bool Triangle::is_equal(const Triangle& rhs) const {
-//     if (a1_.is_equal(rhs.a1_) && a2_.is_equal(rhs.a2_) && a3_.is_equal(rhs.a3_)) {
-//         return true;
-//     }
-//     return false;
-//}
 
 // handling degenarate triangles
 // bool triangle_t::is_valid() const {

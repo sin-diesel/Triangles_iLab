@@ -26,6 +26,6 @@ triangles.o:
 
 .PHONY: clean
 clean:
-	rm *.o
-	rm triangles
-	rm unittests
+	-rm *.o
+	-rm triangles
+	-rm unittests
