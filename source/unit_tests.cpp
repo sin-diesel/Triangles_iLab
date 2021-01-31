@@ -1,8 +1,20 @@
 #include <gtest/gtest.h>
 #include "triangles.h"
 
+/* TDD:
+1) write a new test
+2) run the code to see the test fail
+3) write code to pass the test
+4) refactor the code
+5) make sure the test still gets passed
+6) repeat
+
+Also: a good practice is to write a test that should be passed
+         and also a test that should fail
+*/
+
 /*---------------------------------------------------------------*/
-TEST(Triangles, Point_equal) {
+TEST(Triangles, PointEqual) {
     Point p1(1.0, 2.1, 3.0);
     Point p2(1.0, 2.100000000001, 3.0);
     Point p3(1.0, 2.101, 3.0);
@@ -11,7 +23,7 @@ TEST(Triangles, Point_equal) {
 }
 
 /*---------------------------------------------------------------*/
-TEST(Triangles, Vector_equal) {
+TEST(Triangles, VectorEqual) {
     Point p1(1.0, 2.0, 3.0);
     Point p2(2.0, 1.0, 3.0);
 
@@ -22,7 +34,7 @@ TEST(Triangles, Vector_equal) {
 }
 
 /*---------------------------------------------------------------*/
-TEST(Triangles, Vector_mult_by_num) {
+TEST(Triangles, VectorMulByNum) {
     Vector v1(1.0, -1.0, 0.0);
 
     Vector v2 = v1 * 3;
@@ -36,7 +48,7 @@ TEST(Triangles, Vector_mult_by_num) {
 }
 
 /*---------------------------------------------------------------*/
-TEST(Triangles, Triangle_constructor_vectors) {
+TEST(Triangles, TriangleConstructorVectors) {
     Point p1(2, 1, -2);
     Point p2(4, -1, 1);
     Point p3(3, 2, 1);
