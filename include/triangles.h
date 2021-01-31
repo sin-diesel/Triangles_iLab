@@ -24,6 +24,7 @@
 
         bool is_equal(const Point& rhs) const;
         std::vector<float> get_coordinates() const;
+        void dump() const;
     };
 
     /*---------------------------------------------------------------*/
@@ -33,11 +34,27 @@
         Vector(float x, float y, float z): m_x(x), m_y(y), m_z(z) {};
         Vector(const Point& p1, const Point& p2);
         Vector(const Vector& rhs) = default;
+        Vector() = default;
 
         Vector& operator*=(float num);
 
         bool is_equal(const Vector& rhs) const;
         std::vector<float> get_coordinates() const;
+        void dump() const;
+    };
+
+    /*---------------------------------------------------------------*/
+    class Line {
+        Point m_p;
+        Vector m_a;
+
+    public:
+        Line(const Point& p, const Vector& a): m_p(p), m_a(a) {}
+        Line(const Point& p1, const Point& a);
+        Line(const Plane& pl1, const Plane& pl2);
+
+        bool is_equal(const Line& rhs) const;
+        void dump() const;
     };
 
     /*---------------------------------------------------------------*/
@@ -55,22 +72,45 @@
         void dump() const;
     };
 
+    /*---------------------------------------------------------------*/
+    class Plane {
+        Point m_p;
+        Vector m_v1;
+        Vector m_v2;
+    public:
+        Plane(const Point& p, const Vector& v1, const Vector& v2): m_p(p), m_v1(v1), m_v2(v2) {}
+        Plane(const Point& p1, const Point& p2, const Point& p3);
+
+        Vector get_normal();
+        bool is_equal(const Plane& rhs) const;
+        void dump() const;
+
+    };
+
     bool operator==(const Point& p1, const Point& p2);
 
     /*---------------------------------------------------------------*/
     bool operator==(const Vector& v1, const Vector& v2);
 
     /*---------------------------------------------------------------*/
+    bool operator==(const Plane& pl1, const Plane& pl2);
+
+    /*---------------------------------------------------------------*/
     bool operator==(const Triangle& t1, const Triangle& t2);
 
     /*---------------------------------------------------------------*/
-    std::ostream& operator<<(std::ostream& stream, const Point& rhs);
+    bool operator==(const Line& l1, const Line& l2);
+
+    /*---------------------------------------------------------------*/
+    //std::ostream& operator<<(std::ostream& stream, const Point& rhs);
 
     /*---------------------------------------------------------------*/
     Vector operator*(const Vector& lhs, float num);
 
     /*---------------------------------------------------------------*/
     Vector operator*(float num, const Vector& rhs);
+
+
 
     //---------------------- Plane
     // struct plane_t:public Printable {

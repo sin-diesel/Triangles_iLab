@@ -14,16 +14,46 @@ bool Point::is_equal(const Point& rhs) const {
 }
 
 /*---------------------------------------------------------------*/
-std::ostream& operator<<(std::ostream& stream, const Point& rhs) {
-    std::vector<float> coordinates = rhs.get_coordinates();
-    stream << "(" << coordinates[0] << ", " << coordinates[1] << ", " <<
-                        coordinates[2] << ")" << std::endl;
-    return stream;
+void Point::dump() const {
+    std::cout << "Dumping point " << this << std::endl;
+    std::cout <<  "(" << m_x << ", " << m_y << ", " <<
+                         m_z << ")" << std::endl;
 }
+
+/*---------------------------------------------------------------*/
+// std::ostream& operator<<(std::ostream& stream, const Point& rhs) {
+//     std::cout << "Point " << &rhs << std::endl;
+//     std::vector<float> coordinates = rhs.get_coordinates();
+//     stream << "(" << coordinates[0] << ", " << coordinates[1] << ", " <<
+//                         coordinates[2] << ")" << std::endl;
+//     return stream;
+// }
+
+/*---------------------------------------------------------------*/
+// std::ostream& operator<<(std::ostream& stream, const Vector& rhs) {
+
+//     std::cout << "Triangle: " << &rhs << std::endl;
+
+//     std::vector<float> coordinates = rhs.get_coordinates();
+//     stream << "(" << coordinates[0] << ", " << coordinates[1] << ", " <<
+//                         coordinates[2] << ")" << std::endl;
+//     return stream;
+// }
+
+/*---------------------------------------------------------------*/
+// std::ostream& operator<<(std::ostream& stream, const Line& rhs) {
+//     std::cout << 
+//     return stream;
+// }
 
 /*---------------------------------------------------------------*/
 bool operator==(const Point& p1, const Point& p2) {
     return p1.is_equal(p2);
+}
+
+/*---------------------------------------------------------------*/
+bool operator==(const Plane& pl1, const Plane& pl2) {
+    return pl1.is_equal(pl2);
 }
 
 /*---------------------------------------------------------------*/
@@ -85,6 +115,12 @@ bool Vector::is_equal(const Vector& rhs) const {
            std::abs(m_z - rhs.m_z) < TOLERANCE ? true : false;
 }
 
+void Vector::dump() const {
+    std::cout << "Dumping vector " << this << std::endl;
+    std::cout <<  "(" << m_x << ", " << m_y << ", " <<
+                         m_z << ")" << std::endl;
+}
+
 std::vector<float> Vector::get_coordinates() const {
     std::vector<float> coordinates = {m_x, m_y, m_z};
     return coordinates;
@@ -110,6 +146,38 @@ Triangle::Triangle(const Point& p1, const Point& p2, const Point& p3): m_p1(p1),
                                                                        m_p2(p2), \
                                                                        m_p3(p3) {}; \
 
+
+/*---------------------------------------------------------------*/
+bool Line::is_equal(const Line& rhs) const {
+    if (m_a.is_equal(rhs.m_a) && m_p.is_equal(rhs.m_p)) {
+        return true;
+    }
+    return false;
+}
+
+/*---------------------------------------------------------------*/
+void Line::dump() const {
+    std::cout << "Dumping line: " << this << std::endl;
+    m_p.dump();
+    m_a.dump();
+}
+
+/*---------------------------------------------------------------*/
+bool operator==(const Line& l1, const Line& l2) {
+    return l1.is_equal(l2);
+}
+
+/*---------------------------------------------------------------*/
+Line::Line(const Point& p1, const Point& p2) {
+    m_p = p1;
+    m_a = Vector(p1, p2);
+}
+
+/* Intersection via two planes */
+/*---------------------------------------------------------------*/
+Line::Line(const Plane& pl1, const Plane& pl2) {
+    m_a = cross_product(pl1.get_normal(), pl2.get_normal());
+}
 
 /*---------------------------------------------------------------*/
 Triangle::Triangle(const Point& p, const Vector& v1, const Vector& v2): m_p1(p) {
@@ -143,11 +211,34 @@ bool Triangle::is_equal(const Triangle& rhs) const {
     return false;
 }
 
+/*---------------------------------------------------------------*/
 void Triangle::dump() const {
     std::cout << "Dumping triangle: " << this << std::endl;
-    std::cout << "Point 1: " << m_p1 << std::endl;
-    std::cout << "Point 2: " << m_p2 << std::endl;
-    std::cout << "Point 3: " << m_p3 << std::endl;
+    m_p1.dump();
+    m_p2.dump();
+    m_p3.dump();
+}
+
+/*---------------------------------------------------------------*/
+Plane::Plane(const Point& p1, const Point& p2, const Point& p3): m_p(p1) {
+    m_v1 = Vector(p1, p2);
+    m_v2 = Vector(p1, p3);
+}
+
+/*---------------------------------------------------------------*/
+void Plane::dump() const {
+    std::cout << "Dumping plane " << this << std::endl;
+    m_p.dump();
+    m_v1.dump();
+    m_v2.dump();
+}
+
+/*---------------------------------------------------------------*/
+bool Plane::is_equal(const Plane& rhs) const {
+    if (m_v1.is_equal(rhs.m_v1) && m_v2.is_equal(rhs.m_v2)) {
+        return true;
+    }
+    return false;
 }
 
 

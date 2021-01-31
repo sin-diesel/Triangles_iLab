@@ -67,6 +67,74 @@ TEST(Triangles, TriangleConstructorVectors) {
     ASSERT_EQ(t1, t2);
 }
 
+/*---------------------------------------------------------------*/
+TEST(Triangles, Print) {
+    Point p1(2, 1, -2);
+    Point p2(4, -1, 1);
+    Point p3(3, 2, 1);
+
+    Vector v1(2, 4, 1);
+
+    Line l1(p2, v1);
+
+    Triangle t1(p1, p2, p3);
+
+    D(l1.dump());
+    D(p1.dump());
+    D(v1.dump());
+    D(t1.dump());
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, LineConstructor) {
+    Point p1(2, 1, -2);
+    Point p2(4, -1, 1);
+
+    Vector v1(2, -2, 3);
+
+    Line l1(p1, v1);
+    Line l2(p1, p2);
+
+    D(l1.dump());
+    D(l2.dump());
+
+    ASSERT_EQ(l1, l2);
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, PlaneConstructor) {
+    Point p1(2, 1, -2);
+    Point p2(4, -1, 1);
+    Point p3(0, -2, -1);
+
+    Vector v1(p1, p2);
+    Vector v2(p1, p3);
+
+    Plane pl1(p1, p2, p3);
+    Plane pl2(p1, v1, v2);
+
+    ASSERT_EQ(pl1, pl2);
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, PlanePlaneIntersection) {
+    Point p1(2, 1, -2);
+    Point p2(4, -1, 1);
+    Point p3(0, -2, -1);
+
+    Point p4(0, 0, 0);
+    Point p5(1, 1, 1);
+    Point p6(-1, -1, -1);
+
+    Plane pl1(p1, p2, p3);
+    Plane pl2(p4, p5, p6);
+
+    Line l1(pl1, pl2);
+    Line l2(); // add impl
+
+    ASSERT_EQ(l1, l2);
+}
+
 
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);
