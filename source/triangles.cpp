@@ -14,37 +14,15 @@ bool Point::is_equal(const Point& rhs) const {
 }
 
 /*---------------------------------------------------------------*/
+Point::Point(float x, float y, float z): m_x(x), m_y(y), m_z(z) {};
+
+/*---------------------------------------------------------------*/
 void Point::dump() const {
     std::cout << "Dumping point " << this << std::endl;
     std::cout <<  "(" << m_x << ", " << m_y << ", " <<
                          m_z << ")" << std::endl;
 }
 
-/*---------------------------------------------------------------*/
-// std::ostream& operator<<(std::ostream& stream, const Point& rhs) {
-//     std::cout << "Point " << &rhs << std::endl;
-//     std::vector<float> coordinates = rhs.get_coordinates();
-//     stream << "(" << coordinates[0] << ", " << coordinates[1] << ", " <<
-//                         coordinates[2] << ")" << std::endl;
-//     return stream;
-// }
-
-/*---------------------------------------------------------------*/
-// std::ostream& operator<<(std::ostream& stream, const Vector& rhs) {
-
-//     std::cout << "Triangle: " << &rhs << std::endl;
-
-//     std::vector<float> coordinates = rhs.get_coordinates();
-//     stream << "(" << coordinates[0] << ", " << coordinates[1] << ", " <<
-//                         coordinates[2] << ")" << std::endl;
-//     return stream;
-// }
-
-/*---------------------------------------------------------------*/
-// std::ostream& operator<<(std::ostream& stream, const Line& rhs) {
-//     std::cout << 
-//     return stream;
-// }
 
 /*---------------------------------------------------------------*/
 bool operator==(const Point& p1, const Point& p2) {
@@ -72,6 +50,9 @@ Vector& Vector::operator*=(float num) {
     m_z *= num;
     return *this;
 }
+
+/*---------------------------------------------------------------*/
+Vector::Vector(float x, float y, float z): m_x(x), m_y(y), m_z(z) {};
 
 /*---------------------------------------------------------------*/
 Vector operator*(const Vector& lhs, float num) {
@@ -173,11 +154,41 @@ Line::Line(const Point& p1, const Point& p2) {
     m_a = Vector(p1, p2);
 }
 
+/*---------------------------------------------------------------*/
+Point Plane::get_point() const {
+    return m_p;
+}
+
+/*---------------------------------------------------------------*/
+Plane::Plane(const Point& p, const Vector& v1, const Vector& v2): m_p(p), m_v1(v1), m_v2(v2) {}
+
 /* Intersection via two planes */
 /*---------------------------------------------------------------*/
 Line::Line(const Plane& pl1, const Plane& pl2) {
+
+    Vector n1 = pl1.get_normal();
+    Vector n2 = pl2.get_normal();
+
     m_a = cross_product(pl1.get_normal(), pl2.get_normal());
+
+    float n1_n2_dot = dot_product(n1, n2);
+    float n1_normsqr = dot_product(n1, n1);
+    float n2_normsqr = dot_product(n2, n2);
+
+    Point p1 = pl1.get_point();
+    Point p2 = pl2.get_point();
+
+    /* no implicit cast for point-vector conversion */
+    float s1 = dot_product(n1, static_cast<Vector>(p1));
+    float s2 = dot_product(n2, static_cast<Vector>(p2));
+
+    float a = (s2 * n1_n2_dot - s1 * n2_normsqr) / (n1_n2_dot * n1_n2_dot
+                                                 - n1_normsqr * n2_normsqr);
+    float b = (s1 * n1_n2_dot - s2 * n2_normsqr) / (n1_n2_dot * n1_n2_dot
+                                                 - n1_normsqr * n2_normsqr);
 }
+
+Line::Line(const Point& p, const Vector& a): m_p(p), m_a(a) {}
 
 /*---------------------------------------------------------------*/
 Triangle::Triangle(const Point& p, const Vector& v1, const Vector& v2): m_p1(p) {
@@ -198,10 +209,6 @@ Triangle::Triangle(const Point& p, const Vector& v1, const Vector& v2): m_p1(p) 
 
 }
 
-/*---------------------------------------------------------------*/
-// std::vector<const Point&> Triangle::get_points() {
-
-// }
 
 /*---------------------------------------------------------------*/
 bool Triangle::is_equal(const Triangle& rhs) const {
@@ -239,6 +246,32 @@ bool Plane::is_equal(const Plane& rhs) const {
         return true;
     }
     return false;
+}
+
+/*---------------------------------------------------------------*/
+Vector cross_product(const Vector& v1, const Vector& v2) {
+
+    std::vector<float> v1_coord = v1.get_coordinates();
+    std::vector<float> v2_coord = v2.get_coordinates();
+    float x = v1_coord[1] * v2_coord[2] - v1_coord[2] * v2_coord[1];
+    float y = v1_coord[2] * v2_coord[0] - v1_coord[0] * v2_coord[2];
+    float z = v1_coord[0] * v2_coord[1] - v1_coord[1] * v2_coord[0];
+
+    return Vector(x, y, z);
+}
+
+/*---------------------------------------------------------------*/
+float dot_product(const Vector& lhs, const Vector& rhs) {
+    std::vector<float> l_coord = lhs.get_coordinates();
+    std::vector<float> r_coord = rhs.get_coordinates();
+
+    return l_coord[0] * r_coord[0] + l_coord[1] * r_coord[1] + l_coord[2] * r_coord[2];
+}
+
+Vector Plane::get_normal() const {
+    Vector normal;
+    normal = cross_product(m_v1, m_v2);
+    return normal;
 }
 
 

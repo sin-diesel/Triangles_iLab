@@ -117,23 +117,74 @@ TEST(Triangles, PlaneConstructor) {
 }
 
 /*---------------------------------------------------------------*/
-TEST(Triangles, PlanePlaneIntersection) {
+TEST(Triangles, CrossProduct) {
+
     Point p1(2, 1, -2);
     Point p2(4, -1, 1);
     Point p3(0, -2, -1);
 
-    Point p4(0, 0, 0);
-    Point p5(1, 1, 1);
-    Point p6(-1, -1, -1);
+    Vector v1(p1, p2);
+    Vector v2(p1, p3);
 
-    Plane pl1(p1, p2, p3);
-    Plane pl2(p4, p5, p6);
+    D(v1.dump());
+    D(v2.dump());
 
-    Line l1(pl1, pl2);
-    Line l2(); // add impl
-
-    ASSERT_EQ(l1, l2);
+    Vector norm = cross_product(v1, v2);
+    D(norm.dump());
+    Vector res(7, -8, -10);
+    ASSERT_EQ(norm, res);
 }
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, DotProduct) {
+
+    Point p1(2, 1, -2);
+    Point p2(4, -1, 1);
+    Point p3(0, -2, -1);
+
+    Vector v1(p1, p2);
+    Vector v2(p1, p3);
+
+    float dot = dot_product(v1, v2);
+    ASSERT_EQ(dot, 5);
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, VectorConversion) {
+
+    Point p1(2, 1, -2);
+    Point p2(4, -1, 1);
+    Point p3(0, -2, -1);
+
+    Vector v1(p1, p2);
+    Vector v2(p1, p3);
+
+    float dot = dot_product(v1, static_cast<Vector>(p1));
+    ASSERT_EQ(dot, -4);
+}
+
+/*---------------------------------------------------------------*/
+// TEST(Triangles, PlanePlaneIntersection) {
+//     Point p1(2, 1, -2);
+//     Point p2(4, -1, 1);
+//     Point p3(0, -2, -1);
+
+//     Point p4(0, 0, 0);
+//     Point p5(1, 1, 1);
+//     Point p6(-1, -1, -3);
+
+//     Plane pl1(p1, p2, p3);
+//     Plane pl2(p4, p5, p6);
+
+//     Point p(1.26, 1.26, -2.53);
+//     Vector a(-10, -10, 9);
+
+//     Line l1(pl1, pl2);
+//     Line l2(p, a); 
+    
+
+//     ASSERT_EQ(l1, l2);
+// }
 
 
 int main(int argc, char** argv) {

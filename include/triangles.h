@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cmath>
 #include <fstream>
 
@@ -13,25 +15,13 @@
 #define TOLERANCE 1e-5
 
 //namespace Geometry {
-    /*---------------------------------------------------------------*/
-    class Point {
-        float m_x = NAN, m_y = NAN, m_z = NAN;
-    public:
-        Point(float x, float y, float z): m_x(x), m_y(y), m_z(z) {};
-        Point() = default;
 
-        std::ostream& operator<<(const Point& rhs);
-
-        bool is_equal(const Point& rhs) const;
-        std::vector<float> get_coordinates() const;
-        void dump() const;
-    };
-
+    class Point;
     /*---------------------------------------------------------------*/
     class Vector {
         float m_x = NAN, m_y = NAN, m_z = NAN;
     public:
-        Vector(float x, float y, float z): m_x(x), m_y(y), m_z(z) {};
+        Vector(float x, float y, float z);
         Vector(const Point& p1, const Point& p2);
         Vector(const Vector& rhs) = default;
         Vector() = default;
@@ -44,14 +34,47 @@
     };
 
     /*---------------------------------------------------------------*/
+    class Point {
+        float m_x = NAN, m_y = NAN, m_z = NAN;
+    public:
+        Point(float x, float y, float z);
+        Point() = default;
+
+        std::ostream& operator<<(const Point& rhs);
+        explicit operator Vector() const {
+            return Vector(m_x, m_y, m_z);
+        }
+
+        bool is_equal(const Point& rhs) const;
+        std::vector<float> get_coordinates() const;
+        void dump() const;
+    };
+
+    /*---------------------------------------------------------------*/
+    class Plane {
+        Point m_p;
+        Vector m_v1;
+        Vector m_v2;
+    public:
+        Plane(const Point& p, const Vector& v1, const Vector& v2);
+        Plane(const Point& p1, const Point& p2, const Point& p3);
+
+        Point get_point() const;
+        Vector get_normal() const;
+        bool is_equal(const Plane& rhs) const;
+        void dump() const;
+
+    };
+
+    /*---------------------------------------------------------------*/
     class Line {
         Point m_p;
         Vector m_a;
 
     public:
-        Line(const Point& p, const Vector& a): m_p(p), m_a(a) {}
+        Line(const Point& p, const Vector& a);
         Line(const Point& p1, const Point& a);
-        Line(const Plane& pl1, const Plane& pl2);
+        Line(const Plane& pl1, const Plane& pl2); // const?
 
         bool is_equal(const Line& rhs) const;
         void dump() const;
@@ -70,21 +93,6 @@
         bool is_equal(const Triangle& rhs) const;
         std::vector<const Point&> get_points();
         void dump() const;
-    };
-
-    /*---------------------------------------------------------------*/
-    class Plane {
-        Point m_p;
-        Vector m_v1;
-        Vector m_v2;
-    public:
-        Plane(const Point& p, const Vector& v1, const Vector& v2): m_p(p), m_v1(v1), m_v2(v2) {}
-        Plane(const Point& p1, const Point& p2, const Point& p3);
-
-        Vector get_normal();
-        bool is_equal(const Plane& rhs) const;
-        void dump() const;
-
     };
 
     bool operator==(const Point& p1, const Point& p2);
@@ -109,6 +117,12 @@
 
     /*---------------------------------------------------------------*/
     Vector operator*(float num, const Vector& rhs);
+
+    /*---------------------------------------------------------------*/
+    Vector cross_product(const Vector& v1, const Vector& v2);
+
+    /*---------------------------------------------------------------*/
+    float dot_product(const Vector& rhs, const Vector& lhs);
 
 
 
