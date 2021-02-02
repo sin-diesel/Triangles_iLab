@@ -24,9 +24,14 @@
         Vector(float x, float y, float z);
         Vector(const Point& p1, const Point& p2);
         Vector(const Vector& rhs) = default;
+        Vector(float num);
         Vector() = default;
 
         Vector& operator*=(float num);
+        Vector& operator/=(float num);
+        // explicit operator float() const {
+
+        // }
 
         bool is_equal(const Vector& rhs) const;
         std::vector<float> get_coordinates() const;
@@ -90,6 +95,7 @@
         Triangle(const Point& p1, const Point& p2, const Point& p3);
         Triangle(const Point& p, const Vector& v1, const Vector& v2);
 
+
         bool is_equal(const Triangle& rhs) const;
         std::vector<const Point&> get_points();
         void dump() const;
@@ -117,6 +123,12 @@
 
     /*---------------------------------------------------------------*/
     Vector operator*(float num, const Vector& rhs);
+
+    /*---------------------------------------------------------------*/
+    Vector operator/(const Vector& lhs, float num);
+
+    /*---------------------------------------------------------------*/
+    Vector operator/(float num, const Vector& rhs);
 
     /*---------------------------------------------------------------*/
     Vector cross_product(const Vector& v1, const Vector& v2);

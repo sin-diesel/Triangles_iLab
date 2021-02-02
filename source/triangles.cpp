@@ -51,6 +51,17 @@ Vector& Vector::operator*=(float num) {
     return *this;
 }
 
+Vector& Vector::operator/=(float num) {
+    /* add exception */
+    if (std::abs(num) >= TOLERANCE) {
+        m_x /= num;
+        m_y /= num;
+        m_z /= num;
+        return *this;
+    }
+    return *this;
+}
+
 /*---------------------------------------------------------------*/
 Vector::Vector(float x, float y, float z): m_x(x), m_y(y), m_z(z) {};
 
@@ -64,6 +75,18 @@ Vector operator*(const Vector& lhs, float num) {
 /*---------------------------------------------------------------*/
 Vector operator*(float num, const Vector& rhs) {
     return rhs * num;
+}
+
+/*---------------------------------------------------------------*/
+Vector operator/(const Vector& lhs, float num) {
+    Vector result = lhs;
+    result /= num;
+    return result;
+}
+
+/*---------------------------------------------------------------*/
+Vector operator/(float num, const Vector& rhs) {
+    return rhs / num;
 }
 
 
@@ -119,8 +142,9 @@ Vector::Vector(const Point& p1, const Point& p2) {
     m_x = end[0] - begin[0];
     m_y = end[1] - begin[1];
     m_z = end[2] - begin[2];
-
 }
+
+Vector::Vector(float num): m_x(num), m_y(num), m_z(num) {}
 
 /*---------------------------------------------------------------*/
 Triangle::Triangle(const Point& p1, const Point& p2, const Point& p3): m_p1(p1), \
@@ -130,7 +154,7 @@ Triangle::Triangle(const Point& p1, const Point& p2, const Point& p3): m_p1(p1),
 
 /*---------------------------------------------------------------*/
 bool Line::is_equal(const Line& rhs) const {
-    if (m_a.is_equal(rhs.m_a) && m_p.is_equal(rhs.m_p)) {
+    if ((m_a.is_equal(rhs.m_a) || m_a.is_equal(rhs.m_a * (-1))) && m_p.is_equal(rhs.m_p)) {
         return true;
     }
     return false;
@@ -168,24 +192,44 @@ Line::Line(const Plane& pl1, const Plane& pl2) {
 
     Vector n1 = pl1.get_normal();
     Vector n2 = pl2.get_normal();
+    D(n1.dump());
+    D(n2.dump());
+    /* testing with the opposite direction */
 
-    m_a = cross_product(pl1.get_normal(), pl2.get_normal());
+    m_a = cross_product(n1, n2);
+    D(m_a.dump());
+    if (m_a == 0) {
+        // throw exception?
+        m_p = Point();
+    } else {
+        float n1_n2_dot = dot_product(n1, n2);
+        float n1_normsqr = dot_product(n1, n1);
+        float n2_normsqr = dot_product(n2, n2);
 
-    float n1_n2_dot = dot_product(n1, n2);
-    float n1_normsqr = dot_product(n1, n1);
-    float n2_normsqr = dot_product(n2, n2);
+        // D(std::cout << "norm1 = " << std::endl);
+        // D(norm1.dump());
+        // D(std::cout << "norm2 = " << std::endl);
+        // D(norm2.dump());
 
-    Point p1 = pl1.get_point();
-    Point p2 = pl2.get_point();
+        Point p1 = pl1.get_point();
+        Point p2 = pl2.get_point();
 
-    /* no implicit cast for point-vector conversion */
-    float s1 = dot_product(n1, static_cast<Vector>(p1));
-    float s2 = dot_product(n2, static_cast<Vector>(p2));
+        /* no implicit cast for point-vector conversion */
+        float s1 = dot_product(n1, static_cast<Vector>(p1));
+        float s2 = dot_product(n2, static_cast<Vector>(p2));
+        D(std::cout << "s1 = " << s1 << std::endl);
+        D(std::cout << "s2 = " << s2 << std::endl);
 
-    float a = (s2 * n1_n2_dot - s1 * n2_normsqr) / (n1_n2_dot * n1_n2_dot
-                                                 - n1_normsqr * n2_normsqr);
-    float b = (s1 * n1_n2_dot - s2 * n2_normsqr) / (n1_n2_dot * n1_n2_dot
-                                                 - n1_normsqr * n2_normsqr);
+        float a = (s2 * n1_n2_dot - s1 * n2_normsqr) / (n1_n2_dot * n1_n2_dot
+                                                    - n1_normsqr * n2_normsqr);
+        float b = (s1 * n1_n2_dot - s2 * n2_normsqr) / (n1_n2_dot * n1_n2_dot
+                                                    - n1_normsqr * n2_normsqr);
+
+        Vector temp(a * n1 + b * n2);
+        /* constructing point as a vector */
+        std::vector<float> coordinates = temp.get_coordinates();
+        m_p = Point(coordinates[0], coordinates[1], coordinates[2]);
+    }
 }
 
 Line::Line(const Point& p, const Vector& a): m_p(p), m_a(a) {}

@@ -164,27 +164,91 @@ TEST(Triangles, VectorConversion) {
 }
 
 /*---------------------------------------------------------------*/
-// TEST(Triangles, PlanePlaneIntersection) {
-//     Point p1(2, 1, -2);
-//     Point p2(4, -1, 1);
-//     Point p3(0, -2, -1);
+TEST(Triangles, PlanePlaneIntersection) {
+    Point p1(2, 1, -2);
+    Point p2(4, -1, 1);
+    Point p3(0, -2, -1);
 
-//     Point p4(0, 0, 0);
-//     Point p5(1, 1, 1);
-//     Point p6(-1, -1, -3);
+    Point p4(2, 3, 1);
+    Point p5(1, 1, 1);
+    Point p6(-1, -1, -3);
 
-//     Plane pl1(p1, p2, p3);
-//     Plane pl2(p4, p5, p6);
+    Plane pl1(p1, p2, p3);
+    Plane pl2(p4, p5, p6);
 
-//     Point p(1.26, 1.26, -2.53);
-//     Vector a(-10, -10, 9);
+    Line l1(pl1, pl2);; 
 
-//     Line l1(pl1, pl2);
-//     Line l2(p, a); 
-    
+    l1.dump();
 
-//     ASSERT_EQ(l1, l2);
-// }
+    //ASSERT_EQ(l1, l2);
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, PlanePlaneIntersection2) {
+    Point p1(2, 1, -2);
+    Point p2(4, -1, 1);
+    Point p3(0, -2, -1);
+
+    Point p4(2, 3, 5);
+    Point p5(3, 8, 7);
+    Point p6(-1, -1, -3);
+
+    Plane pl1(p1, p2, p3);
+    Plane pl2(p4, p5, p6);
+
+
+    Line l1(pl1, pl2); 
+
+    l1.dump();
+
+    //ASSERT_EQ(l1, l2);
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, PlanePlaneIntersection3) {
+    Point p1(1, 1, 1);
+    Point p2(15, -1, -32);
+    Point p3(21, -8, -40);
+
+    Point p4(2, 3, 5);
+    Point p5(3, 8, 7);
+    Point p6(-1, -1, -3);
+
+    Plane pl1(p1, p2, p3);
+    Plane pl2(p4, p5, p6);
+
+
+    Line l1(pl1, pl2); 
+
+    l1.dump();
+
+    //ASSERT_EQ(l1, l2);
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, PlanePlaneParallel) {
+    Point p1(1, 1, 1);
+    Point p2(2, 2, 2);
+    Point p3(4, 1, 1);
+
+    Point p4(2, 2, 2);
+    Point p5(4, 4, 4);
+    Point p6(8, 2, 2);
+
+    Plane pl1(p1, p2, p3);
+    Plane pl2(p4, p5, p6);
+
+    //Point p(1.46, 1.46, -2.75);
+    //Vector a(-20, -20, 2);
+
+    Line l1(pl1, pl2);
+    //Line l2(p, a); 
+
+    l1.dump();
+    //l2.dump();
+
+    //ASSERT_EQ(l1, l2);
+}
 
 
 int main(int argc, char** argv) {
