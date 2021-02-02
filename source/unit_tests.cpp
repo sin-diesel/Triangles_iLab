@@ -250,6 +250,41 @@ TEST(Triangles, PlanePlaneParallel) {
     //ASSERT_EQ(l1, l2);
 }
 
+/*---------------------------------------------------------------*/
+TEST(Triangles, TriangleNotDegenerate) {
+    Point p1(1, 1, 1);
+    Point p2(2, 0, 1);
+    Point p3(-1, -2, 0);
+
+    Triangle t(p1, p2, p3);
+
+    ASSERT_FALSE(t.degenerate());
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, TriangleDegenerate) {
+    Point p1(1, 1, 1);
+    Point p2(2, 0, 1);
+    Point p3(2, 0, 1);
+
+    Triangle t(p1, p2, p3);
+
+    ASSERT_TRUE(t.degenerate());
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, PlaneTriangleConstructor) {
+    Point p1(1, 1, 1);
+    Point p2(2, 0, 1);
+    Point p3(-1, -2, 0);
+
+    Triangle t(p1, p2, p3);
+    Plane pl(t);
+
+    D(pl.dump());
+
+}
+
 
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);

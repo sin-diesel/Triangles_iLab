@@ -17,6 +17,7 @@
 //namespace Geometry {
 
     class Point;
+    class Triangle;
     /*---------------------------------------------------------------*/
     class Vector {
         float m_x = NAN, m_y = NAN, m_z = NAN;
@@ -63,6 +64,7 @@
     public:
         Plane(const Point& p, const Vector& v1, const Vector& v2);
         Plane(const Point& p1, const Point& p2, const Point& p3);
+        Plane(const Triangle& T);
 
         Point get_point() const;
         Vector get_normal() const;
@@ -97,7 +99,8 @@
 
 
         bool is_equal(const Triangle& rhs) const;
-        std::vector<const Point&> get_points();
+        bool degenerate() const;
+        std::vector<Point> get_points() const;
         void dump() const;
     };
 
@@ -134,7 +137,10 @@
     Vector cross_product(const Vector& v1, const Vector& v2);
 
     /*---------------------------------------------------------------*/
-    float dot_product(const Vector& rhs, const Vector& lhs);
+    float dot_product(const Vector& lhs, const Vector& rhs);
+
+    /*---------------------------------------------------------------*/
+    bool intersect(const Triangle& lhs, const Triangle& rhs);
 
 
 

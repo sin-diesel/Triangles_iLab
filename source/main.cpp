@@ -16,6 +16,6 @@
 1) const qualifier in plane.get_normal(), how to fix properly (or const Plane&)
 2) name resoulution conflicts */
 int main(int argc, char** argv) {
-
+    
     return 0;
 }

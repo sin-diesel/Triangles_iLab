@@ -186,6 +186,13 @@ Point Plane::get_point() const {
 /*---------------------------------------------------------------*/
 Plane::Plane(const Point& p, const Vector& v1, const Vector& v2): m_p(p), m_v1(v1), m_v2(v2) {}
 
+Plane::Plane(const Triangle& T) {
+    std::vector<Point> points = T.get_points();
+    m_p = points[0];
+    m_v1 = Vector(points[0], points[1]);
+    m_v2 = Vector(points[0], points[2]);
+}
+
 /* Intersection via two planes */
 /*---------------------------------------------------------------*/
 Line::Line(const Plane& pl1, const Plane& pl2) {
@@ -253,6 +260,14 @@ Triangle::Triangle(const Point& p, const Vector& v1, const Vector& v2): m_p1(p) 
 
 }
 
+std::vector<Point> Triangle::get_points() const {
+    std::vector<Point> points;
+    points.push_back(m_p1);
+    points.push_back(m_p2);
+    points.push_back(m_p3);
+    return points;
+}
+
 
 /*---------------------------------------------------------------*/
 bool Triangle::is_equal(const Triangle& rhs) const {
@@ -312,10 +327,35 @@ float dot_product(const Vector& lhs, const Vector& rhs) {
     return l_coord[0] * r_coord[0] + l_coord[1] * r_coord[1] + l_coord[2] * r_coord[2];
 }
 
+/*---------------------------------------------------------------*/
 Vector Plane::get_normal() const {
     Vector normal;
     normal = cross_product(m_v1, m_v2);
     return normal;
+}
+
+/* Determine whether the triangle is degenerate or not */
+/*---------------------------------------------------------------*/
+bool Triangle::degenerate() const {
+    /* check if they form a line? */
+    if (m_p1 == m_p2 || m_p1 == m_p3 || m_p2 == m_p3) {
+        return true;
+    }
+    return false;
+}
+
+/*---------------------------------------------------------------*/
+bool intersect(const Triangle& T0, const Triangle& T1) {
+    /* 1) determine if lhs or rhs (or both) are degenerate and exit algorithm */
+    if (T0.degenerate() || T1.degenerate()) {
+        return false;
+    }
+
+    /* 2) compute plane equation of lhs */
+    Plane PL0(T0);
+    //D(PL0.dump());
+
+    return false;
 }
 
 
