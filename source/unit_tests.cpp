@@ -285,6 +285,38 @@ TEST(Triangles, PlaneTriangleConstructor) {
 
 }
 
+/*---------------------------------------------------------------*/
+TEST(Triangles, PointOperators) {
+    Point p1(1, 1, 1);
+    Point p2(2, 0, 1);
+
+    Point p3(-1, 1, 0);
+    Point p4(3, 1, 2);
+
+    Point p5 = p1 - p2;
+    Point p6 = p1 + p2;
+
+    ASSERT_EQ(p5, p3);
+    ASSERT_EQ(p6, p4);
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, PointPlaneDistance) {
+    Point p1(1, 1, 1);
+    Point p2(2, 0, 1);
+    Point p3(-1, -2, 0);
+
+    Plane pl(p1, p2, p3);
+    
+    Point p(6, 10, -23);
+
+    float dist = 25.7883;
+    float computed_dist = compute_distance(p, pl);
+
+    float precision = 1e-4;
+    ASSERT_TRUE(std::abs(dist - computed_dist) < precision);
+}
+
 
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);

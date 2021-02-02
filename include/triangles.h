@@ -35,6 +35,7 @@
         // }
 
         bool is_equal(const Vector& rhs) const;
+        float len() const;
         std::vector<float> get_coordinates() const;
         void dump() const;
     };
@@ -45,8 +46,11 @@
     public:
         Point(float x, float y, float z);
         Point() = default;
+        Point(const Point& rhs) = default;
 
         std::ostream& operator<<(const Point& rhs);
+        Point& operator+=(const Point& rhs);
+        Point& operator-=(const Point& rhs);
         explicit operator Vector() const {
             return Vector(m_x, m_y, m_z);
         }
@@ -119,6 +123,12 @@
     bool operator==(const Line& l1, const Line& l2);
 
     /*---------------------------------------------------------------*/
+    Point operator+(const Point& lhs, const Point& rhs);
+
+    /*---------------------------------------------------------------*/
+    Point operator-(const Point& lhs, const Point& rhs);
+
+    /*---------------------------------------------------------------*/
     //std::ostream& operator<<(std::ostream& stream, const Point& rhs);
 
     /*---------------------------------------------------------------*/
@@ -140,7 +150,12 @@
     float dot_product(const Vector& lhs, const Vector& rhs);
 
     /*---------------------------------------------------------------*/
+    float compute_distance(const Point& p, const Plane& pl);
+
+    /*---------------------------------------------------------------*/
     bool intersect(const Triangle& lhs, const Triangle& rhs);
+
+
 
 
 

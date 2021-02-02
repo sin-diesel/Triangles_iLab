@@ -23,6 +23,36 @@ void Point::dump() const {
                          m_z << ")" << std::endl;
 }
 
+/*---------------------------------------------------------------*/
+Point& Point::operator+=(const Point& rhs) {
+    m_x += rhs.m_x;
+    m_y += rhs.m_y;
+    m_z += rhs.m_z;
+    return *this;
+}
+
+/*---------------------------------------------------------------*/
+Point& Point::operator-=(const Point& rhs) {
+    m_x -= rhs.m_x;
+    m_y -= rhs.m_y;
+    m_z -= rhs.m_z;
+    return *this;
+}
+
+/*---------------------------------------------------------------*/
+Point operator+(const Point& lhs, const Point& rhs) {
+    Point tmp{lhs};
+    tmp += rhs;
+    return tmp;
+}
+
+/*---------------------------------------------------------------*/
+Point operator-(const Point& lhs, const Point& rhs) {
+    Point tmp{lhs};
+    tmp -= rhs;
+    return tmp;
+}
+
 
 /*---------------------------------------------------------------*/
 bool operator==(const Point& p1, const Point& p2) {
@@ -101,6 +131,7 @@ Vector operator+(const Vector& lhs, const Vector& rhs) {
     return Vector(x, y, z);
 }
 
+
 /*---------------------------------------------------------------*/
 Vector operator-(const Vector& lhs, const Vector& rhs) {
     std::vector<float> l_coord = lhs.get_coordinates();
@@ -142,6 +173,11 @@ Vector::Vector(const Point& p1, const Point& p2) {
     m_x = end[0] - begin[0];
     m_y = end[1] - begin[1];
     m_z = end[2] - begin[2];
+}
+
+/*---------------------------------------------------------------*/
+float Vector::len() const {
+    return sqrtf(m_x * m_x + m_y * m_y + m_z * m_z);
 }
 
 Vector::Vector(float num): m_x(num), m_y(num), m_z(num) {}
@@ -269,6 +305,7 @@ std::vector<Point> Triangle::get_points() const {
 }
 
 
+
 /*---------------------------------------------------------------*/
 bool Triangle::is_equal(const Triangle& rhs) const {
     if (m_p1.is_equal(rhs.m_p1) && m_p2.is_equal(rhs.m_p2) && m_p3.is_equal(rhs.m_p3)) {
@@ -342,6 +379,20 @@ bool Triangle::degenerate() const {
         return true;
     }
     return false;
+}
+
+/*---------------------------------------------------------------*/
+float compute_distance(const Point& Q, const Plane& pl) {
+    Point P  = Point(pl.get_point());
+    Vector diff = Vector(Q - P);
+    Vector n = pl.get_normal();
+
+    float n_len = n.len();
+    assert(std::abs(n_len) > TOLERANCE);
+
+    float dot = dot_product(diff, n);
+
+    return dot / n_len;
 }
 
 /*---------------------------------------------------------------*/
