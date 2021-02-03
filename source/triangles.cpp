@@ -338,10 +338,39 @@ void Plane::dump() const {
 
 /*---------------------------------------------------------------*/
 bool Plane::is_equal(const Plane& rhs) const {
-    if (m_v1.is_equal(rhs.m_v1) && m_v2.is_equal(rhs.m_v2)) {
+    /* check also dot product */
+    Vector n1 = get_normal();
+    Vector n2 = rhs.get_normal();
+
+    Vector cross = cross_product(n1, n2);
+
+    Vector diff = static_cast<Vector>(m_p - rhs.m_p);
+
+    float dot1 = dot_product(diff, n1);
+    float dot2 = dot_product(diff, n2);
+
+    if ((std::abs(dot1) < TOLERANCE && std::abs(dot2) < TOLERANCE) && cross == 0) {
         return true;
     }
     return false;
+}
+
+/*---------------------------------------------------------------*/
+bool Plane::is_parallel(const Plane& rhs) const {
+
+    if (is_equal(rhs)) {
+        return false;
+    }
+
+    Vector n1 = get_normal();
+    Vector n2 = rhs.get_normal();
+    
+    Vector cross = cross_product(n1, n2);
+    if (cross == 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /*---------------------------------------------------------------*/
@@ -396,6 +425,11 @@ float compute_distance(const Point& Q, const Plane& pl) {
 }
 
 /*---------------------------------------------------------------*/
+bool intersect_2d(const Triangle& T0, const Triangle& T1) {
+    
+}
+
+/*---------------------------------------------------------------*/
 bool intersect(const Triangle& T0, const Triangle& T1) {
     /* 1) determine if lhs or rhs (or both) are degenerate and exit algorithm */
     if (T0.degenerate() || T1.degenerate()) {
@@ -404,303 +438,32 @@ bool intersect(const Triangle& T0, const Triangle& T1) {
 
     /* 2) compute plane equation of lhs */
     Plane PL0(T0);
+    /* 3) compute signed distances from triangle T1 to plane PL0 */
+    std::vector<Point> points = T0.get_points();
+    float d1 = compute_distance(points[0], PL0);
+    float d2 = compute_distance(points[1], PL0);
+    float d3 = compute_distance(points[2], PL0);
+    /* 4) if they are all of the same sign, exit */
+    if ((d1 > 0 && d2 > 0 && d3 > 0) || 
+        (d1 < 0 && d2 < 0 && d3 < 0)) {
+            return false;
+        }
+    /* 5) compute plane equation of T1 */
+    Plane PL1(T1);
+    /* 6) if parallel, exit. If coincident, project triangles and perform a 2d triangles intersection
+        test */
+    if (PL1.is_parallel(PL0)) {
+        return false;
+    }
+    if (PL1.is_equal(PL0)) {
+        bool intersect = intersect_2d(T0, T1);
+    }
+
+
     //D(PL0.dump());
 
     return false;
 }
-
-
-
-// float Vector::len() const {
-//     return sqrtf(m_x * m_x + m_y * m_y + m_z * m_z);
-// }
-
-
-// void Vector::print() const {
-//     fprintf(stderr, "--------------\n");
-//     fprintf(stderr, "Vector %p: (%f, %f, %f)\n", this, m_x, m_y, m_z);
-//     fprintf(stderr, "--------------\n");
-// }
-
-// triangle constructor through 3 points
-
-/*---------------------------------------------------------------*/
-// Triangle::Triangle(const Point& p1, const Point& p2, const Point& p3): m_p1(p1), \
-//                                                                        m_p2(p2), \
-//                                                                        m_p3(p3) {};
-
-// handling degenarate triangles
-// bool triangle_t::is_valid() const {
-//     Vector nul(0, 0, 0);
-//     if ((a3_ - a1_ - a2_).is_equal(nul) != true) {
-//         return false;
-//     }
-
-//     Vector v1 = cross_product(a1_, a2_);
-//     Vector v2 = cross_product(a2_, a3_);
-//     Vector v3 = cross_product(a1_, a3_);
-
-//     if(v1.is_equal(nul) || v2.is_equal(nul) || v3.is_equal(nul)) {
-//         return false;
-//     }
-
-//     return true;
-// }
-
-// void triangle_t::print() const {
-//     fprintf(stderr, "--------------\n");
-//     fprintf(stderr, "Triangle %p:\n\n\n", this);
-//     a1_.print();
-//     a2_.print();
-//     a3_.print();
-//     fprintf(stderr, "\n\n\n");
-//     fprintf(stderr, "--------------\n");
-// }
-//---------------------- Plane
-// plane_t::plane_t(const Vector& vec1, const Vector& vec2, const point_t& point) {
-//     norm = cross_product(vec1, vec2);
-//     a = norm.m_x;
-//     b = norm.m_y;
-//     c = norm.m_z;
-//     d = -1 * (a * point.m_x + b * point.m_y + c * point.m_z);
-//     DUB(print())
-// }
-
-// void plane_t::print() const {
-//     fprintf(stderr, "--------------\n");
-//     fprintf(stderr, "Plane %p: %fx + %fy + %fz + %f = 0\n\n\n", this, a, b, c, d);
-//     //norm.print();
-//     fprintf(stderr, "\n\n\n");
-//     fprintf(stderr, "--------------\n");
-// }
-
-
-// bool plane_t::is_equal(const plane_t& rhs) const {
-//     if (abs(a - rhs.a) < TOLERANCE && abs(b - rhs.b) < TOLERANCE && abs(c - rhs.c) < TOLERANCE && \
-//                 abs(d - rhs.d) < TOLERANCE) {
-//         return true;      
-//     }
-//     return false;
-// }
-
-// void test() {
-//     std::fstream log;
-//     log.open("log.txt", std::ios::out);
-//     log << "TESTING----------------------------------------\\" << std::endl;
-
-//     //log << "TEST 1: " << std::endl;
-//     point_t p1(0.23, 1.25, -7.32);
-//     point_t p2(0.23, 1.25, -7.320000000001);
-//     if (p1.is_equal(p2) == false) {
-//         ASSERT("TEST 1");
-//         log << "TEST 1 FAILED" << std::endl;
-//         exit(-1);
-//     }
-//     log << "TEST 1 PASSED" << std::endl;
-// //--------------------------------
-//     //log << "TEST 2: " << std::endl;
-//     p1 = point_t(1, -1, 0);
-//     p2 = point_t(1, 5.5, -3.5);
-//     Vector nul(0, 0, 0);
-//     Vector v1(0.24, -5.21, 1.12);
-//     Vector v2(p1, p2);
-//     Vector v3 = v1 + v2;
-//     Vector v4 = Vector(0.24, 1.29, -2.38);
-//     if (v3.is_equal(v4) == false) {
-//         ASSERT("TEST 2");
-//         log << "TEST 2 FAILED";
-//         exit(-1);
-//     }
-//     log << "TEST 2 PASSED" << std::endl;
-// //--------------------------------
-//     //log << "TEST 3: " << std::endl;
-//     p1 = point_t(1, -1, 0);
-//     p2 = point_t(3, 5, -8);
-//     point_t p3(0, 0, -3);
-//     triangle_t triangle_1(p1, p2, p3);
-//     if (triangle_1.is_valid() == false) {
-//         ASSERT("TEST 3");
-//         log << "TEST 3 FAILED";
-//         exit(-1);
-//     }
-//     log << "TEST 3 PASSED" << std::endl;
-// //--------------------------------
-//     //log << "TEST 4: " << std::endl;
-//     v1 = Vector(1, 1, -3);
-//     v2 = Vector(-1, 3, -1);
-//     v3 = Vector(cross_product(v1, v2));
-//     DUB(v3.print();)
-//     v4 = Vector(8, 4, 4);
-
-//     if (v3.is_equal(v4) == false) {
-//         ASSERT("TEST 4");
-//         log << "TEST 4 FAILED";
-//         exit(-1);
-//     }
-//     log << "TEST 4 PASSED" << std::endl;
-// //--------------------------------
-//     //log << "TEST 5: " << std::endl;
-//     v1 = Vector(1, 1, -3);
-//     v2 = Vector(8, 8, -24);
-//     v3 = cross_product(v1, v2);
-//     DUB(v3.print();)
-
-//     if (v3.is_equal(nul) == false) {
-//         ASSERT("TEST 5");
-//         log << "TEST 5 FAILED";
-//         exit(-1);
-//     }
-//     log << "TEST 5 PASSED" << std::endl;
-// //--------------------------------
-//     //log << "TEST 6: " << std::endl;
-//     p1 = point_t(2, 3, 4);
-//     v1 = Vector(1, 2, 5);
-//     v2 = Vector(0, -4, 2);
-
-//     p2 = point_t(0, 0, 0);
-//     v3 = Vector(1, -2, -2);
-//     v4 = Vector(-4, -5, 0);
-
-//     plane_t plane1(v1, v2, p1);
-//     plane_t plane2(v3, v4, p2);
-
-//     //plane1.print();
-//     //plane2.print();
-
-
-//     Vector intersect = plane_intersection(plane1, plane2);
-//     //intersect.print();
-//     log << "TEST 6 PASSED" << std::endl;
-// //--------------------------------
-//     p1 = point_t(3, -3, 2);
-//     p2 = point_t(0, 0, 1);
-//     v1 = Vector(1, 2, 5);
-//     v2 = Vector(0, -4, 2);
-
-//     plane1 = plane_t(v1, v2, p2);
-//     //plane1.print();
-
-//     float dist = compute_distance(plane1, p1);
-//     fprintf(stderr, "Dist: %f\n", dist);
-//     if (abs(dist - 3.031158) > TOLERANCE * 1000) {
-//         ASSERT("TEST 7");
-//         log << "TEST 7 FAILED";
-//         exit(-1);
-//     }
-//     log << "TEST 7 PASSED" << std::endl;
-
-//     p1 = point_t(3, -3, 2);
-//     p2 = point_t(3, -3, 2.01);
-
-//     v1 = Vector(1, 2, 5);
-//     v2 = Vector(0, -4, 2);
-
-//     plane1 = plane_t(v1, v2, p1);
-//     plane2 = plane_t(v1, v2, p2);
-//     //plane1.print();
-//     //plane2.print();
-
-// //--------------------------------
-
-//     if (plane1.is_equal(plane2)) {
-//         ASSERT("TEST 8");
-//         log << "TEST 8 FAILED";
-//         exit(-1);
-//     }
-//      log << "TEST 8 PASSED" << std::endl;
-// //--------------------------------
-
-
-//     log << "ALL TESTS PASSED" << std::endl;
-//     log.close();
-// }
-
-// //-------- get data
-// void acquire_input() {
-//     std::vector<triangle_t> triangles;
-//     int n = 0;
-//     float x, y, z = 0;
-//     std::cin >> n;
-//     for (int i = 0; i < n; ++i) {
-//         std::cin >> x >> y >> z;
-//         point_t p1(x, y, z);
-//         std::cin >> x >> y >> z;
-//         point_t p2(x, y, z);
-//         std::cin >> x >> y >> z;
-//         point_t p3(x, y, z);
-//         triangle_t triangle(p1, p2, p3);
-//         //triangle.print();
-//         if (triangle.is_valid() == false) {
-//             ASSERT("TRIANGLE FAILURE");
-//         } else {
-//             triangles.push_back(triangle);
-//         }
-//     }
-// }
-
-
-// float scalar_multiplication(const Vector& rhs, const Vector& lhs) {
-//     return rhs.m_x * lhs.m_x + rhs.m_y * lhs.m_y + rhs.m_z * lhs.m_z;
-// }
-
-// float compute_distance(const plane_t& plane, const point_t& point) {
-//     float norm_len = plane.norm.len();
-//     assert(norm_len != 0);
-//     Vector v(point.m_x, point.m_y, point.m_z);
-//     v.print();
-//     plane.norm.print();
-
-//     return (scalar_multiplication(plane.norm, v) + plane.d) / (1.0 * norm_len);
-// }
-
-// Vector cross_product(const Vector& lhs, const Vector& rhs) {
-//     float x, y, z = NAN;
-
-//     x = lhs.m_y * rhs.m_z - lhs.m_z * rhs.m_y;
-//     y = lhs.m_z * rhs.m_x - lhs.m_x * rhs.m_z;
-//     z = lhs.m_x * rhs.m_y - lhs.y_ * rhs.m_x;
-
-//     return Vector(x, y, z);
-// }
-
-// Vector plane_intersection(const plane_t& lhs, const plane_t& rhs) {
-//     return cross_product(lhs.norm, rhs.norm);
-// }       
-
-// bool triangle_intersection(const triangle_t& rhs, const triangle_t& lhs) {
-//     /* 1) triangles are not degenerate, already checked  DONE
-//         2) compute plane equation of rhs: T1 DONE
-//         3) compute signed distances of vertices of lhs to T1 DONE
-//         4) compate signs of distances. If they are all the same, return false DONE
-//         5) compute plane equation of lhs: T2 DONE
-//         6) compare both planes. If they coincide, project triagles on a plane and perform 2d triangle intersection test
-//         7) if parallel, return false DONE
-//         8) compute intersection line of planes
-//         9) compute intervals
-//         10) if they do not overlap, return false */
-
-//         plane_t T1(rhs.a1_, rhs.a2_, rhs.v1_);
-//         Vector nul(0, 0, 0);
-//         float d1 = compute_distance(T1, lhs.v1_);
-//         float d2 = compute_distance(T1, lhs.v2_);
-//         float d3 = compute_distance(T1, lhs.v3_);
-
-//         if ((d1 < 0 && d2 < 0 && d3 < 0) || (d1 > 0 && d2 > 0 && d3 > 0)) {
-//             return false;
-//         }
-
-//         plane_t T2(lhs.a1_, lhs.a2_, lhs.v1_);
-
-//         vector_t cross = cross_product(T1.norm, T2.norm);
-//         if (cross.is_equal(nul)) { // may be parallel or the same plane
-//             if (T1.is_equal(T2)) {
-//                         // TODO: 2d triangular intersection
-//             } else {
-//                 return false;
-//             }
-//         }
-
-// }
 
 
 

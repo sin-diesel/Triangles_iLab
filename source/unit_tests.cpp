@@ -113,6 +113,9 @@ TEST(Triangles, PlaneConstructor) {
     Plane pl1(p1, p2, p3);
     Plane pl2(p1, v1, v2);
 
+    D(pl1.dump());
+    D(pl2.dump());
+
     ASSERT_EQ(pl1, pl2);
 }
 
@@ -315,6 +318,76 @@ TEST(Triangles, PointPlaneDistance) {
 
     float precision = 1e-4;
     ASSERT_TRUE(std::abs(dist - computed_dist) < precision);
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, PointPlaneDistanceNegative) {
+    Point p1(1, 1, 1);
+    Point p2(2, 0, 1);
+    Point p3(-1, -2, 0);
+
+    Plane pl(p1, p2, p3);
+    
+    Point p(-6, -10, 23);
+
+    float dist = -24.6336;
+    float computed_dist = compute_distance(p, pl);
+    D(std::cout << "Computed distance: " << computed_dist << std::endl);
+
+    float precision = 1e-4;
+    ASSERT_TRUE(std::abs(dist - computed_dist) < precision);
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, PlanePlaneParallel2) {
+    Point p1(1, 1, 1);
+    Point p2(3, 3, 3);
+    Point p3(4, 1, 1);
+
+    Point p4(2, 2, 2);
+    Point p5(4, 4, 4);
+    Point p6(8, 2, 2);
+
+    Plane pl1(p1, p2, p3);
+    Plane pl2(p4, p5, p6);
+    
+    ASSERT_FALSE(pl1.is_parallel(pl2));
+    ASSERT_TRUE(pl1.is_equal(pl2));
+
+    p4 = Point(-1, -1, 1);
+    p5 = Point(-3, -3, 3);
+    p6 = Point(-4, -1, 1);
+    pl2 = Plane(p4, p5, p6);
+
+    ASSERT_FALSE(pl1.is_parallel(pl2));
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, TriangleDistance) {
+    Point p1(1, 1, 1);
+    Point p2(2, 0, 1);
+    Point p3(-1, -2, 0);
+
+    Point p4(-1, 2, 0);
+    Point p5(2, 4, 3);
+    Point p6(-4, -2, 0);
+
+    Point v1(4, 2, 3);
+    Point v2(-4, -2, -3);
+    Point v3(-2, 1, 0);
+
+    Triangle t0(p1, p2, p3);
+    Triangle t1(p4, p5, p6);
+
+    Plane pl0(t1);
+
+    float d1 = compute_distance(v1, pl0);
+    float d2 = compute_distance(v2, pl0);
+    float d3 = compute_distance(v3, pl0);
+
+    D(std::cout << "Computed distances: " << d1 << ", " << d2 << ", " << d3 << std::endl);
+    ASSERT_TRUE(d1 > 0 && d2 > 0 && d3 < 0);
+
 }
 
 

@@ -72,6 +72,7 @@
 
         Point get_point() const;
         Vector get_normal() const;
+        bool is_parallel(const Plane& rhs) const;
         bool is_equal(const Plane& rhs) const;
         void dump() const;
 
@@ -155,34 +156,7 @@
     /*---------------------------------------------------------------*/
     bool intersect(const Triangle& lhs, const Triangle& rhs);
 
+    /*---------------------------------------------------------------*/
+    bool intersect_2d(const Triangle& T0, const Triangle& T1);
 
-
-
-
-    //---------------------- Plane
-    // struct plane_t:public Printable {
-
-    //     vector_t norm;
-    //     float a, b, c, d = NAN;
-
-    //     plane_t(const vector_t& vec1, const vector_t& vec2, const point_t& point);
-    //     void print() const override;
-    //     bool is_equal(const plane_t& rhs) const;
-    // };
-
-
-    // bool triangle_intersection(const triangle_t& rhs, const triangle_t& lhs);
-
-    // float compute_distance(const plane_t& plane, const point_t& point);
-
-    // void test();
-
-    // void acquire_input();
-
-    // float scalar_multiplication(const vector_t& rhs, const vector_t& lhs);
-
-    // vector_t cross_product(const vector_t& lhs, const vector_t& rhs);
-
-    // vector_t plane_intersection(const plane_t& lhs, const plane_t& rhs);
-//}
-
+    
