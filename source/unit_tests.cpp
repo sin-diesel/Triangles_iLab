@@ -388,22 +388,24 @@ TEST(Triangles, LinePlaneIntersection) {
     if (d1 < 0 && d2 < 0 && d3 > 0) {
         Line l1(d, F);
         Line l2(E, F);
-        D(l1.dump());
-        D(l2.dump());
+    
+        Point ans1(0.8261, -1.6522, 0.4348);
+        Point ans2(1.6667, 2, 1.3333);  
 
         Point intersection_point_1(P0, l1);
-        Point intersection_point_2(P0, l2);
+
+        //D(l1.dump());
         D(intersection_point_1.dump());
-        D(intersection_point_2.dump());
-
-        Point ans1(0.83, -1.65, 0.43);
-        Point ans2(1.67, 2, 1.33);
-
         D(std::cout << "Expected point 1: " << std::endl);
         D(ans1.dump());
 
-         D(std::cout << "Expected point 2: " << std::endl);
+        Point intersection_point_2(P0, l2);
+        D(l2.dump());
+        D(intersection_point_2.dump());
+        D(std::cout << "Expected point 2: " << std::endl);
         D(ans2.dump());
+
+
         ASSERT_EQ(intersection_point_1, ans1);
         ASSERT_EQ(intersection_point_2, ans2);
     }

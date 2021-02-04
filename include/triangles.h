@@ -12,7 +12,7 @@
 #define D(expr) if (DEBUG) {expr;};
 
 /* Comparison tolerance */
-#define TOLERANCE 1e-5
+#define TOLERANCE 1e-4
 
 //namespace Geometry {
 

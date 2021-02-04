@@ -1,7 +1,7 @@
 
 CPP = g++
 IDIR = ./include
-CPPFLAGS = -std=c++17 -I $(IDIR)
+CPPFLAGS = -std=c++17 -lgtest -lpthread -I $(IDIR)
 SRC_DIR = source
 INCL_DIR = include
 SOURCES = main.cpp unit_tests.cpp

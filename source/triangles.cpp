@@ -19,24 +19,47 @@ Point::Point(float x, float y, float z): m_x(x), m_y(y), m_z(z) {};
 /*---------------------------------------------------------------*/
 Point::Point(const Plane& pl, const Line& l) {
     /* check if parallel */
+    D(pl.dump()); 
+    D(std::cout << std::endl);
+
     Vector normal = pl.get_normal();
+    D(std::cout << "Normal n: " << std::endl);
+    D(normal.dump());
+    D(std::cout << std::endl); 
+
     Vector direction = l.get_direction();
+    D(std::cout << "direction vector d: " << std::endl);
+    D(direction.dump());
+    D(std::cout << std::endl); 
+
+    Point P = l.get_point();
+    D(std::cout << "Point on line P: " << std::endl);
+    D(P.dump());
+    D(std::cout << std::endl); 
+
+    Point p_plane = pl.get_point();
+    D(std::cout << "Point on plane PL: " << std::endl);
+    D(p_plane.dump());
+    D(std::cout << std::endl); 
+
+    float d = (-1) * dot_product(normal, static_cast<Vector>(p_plane));
+
+    D(std::cout << "d from plane equation: " << d << std::endl);
 
     float normal_module = normal.len();
     // normalize
-    normal = normal / normal_module;
+    //normal = normal / normal_module;
 
-    Point P = l.get_point();
-    Point p_plane = pl.get_point();
 
     /* Calculate dot product of normal vector and direction, and also normal vector and point on plane */
     float dot = dot_product(normal, direction);
-    float d = dot_product(normal, static_cast<Vector>(p_plane));
 
     /* fix later */
     assert(std::abs(dot) > TOLERANCE);
 
     float t = (-1) * (dot_product(normal, static_cast<Vector>(P)) + d) / dot;
+
+    D(std::cout << "Calculated t: " << t << std::endl);
 
     Vector multiplied = t * direction;
     std::vector<float> coordinates = multiplied.get_coordinates();
