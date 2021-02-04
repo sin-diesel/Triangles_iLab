@@ -18,6 +18,8 @@
 
     class Point;
     class Triangle;
+    class Plane;
+    class Line;
     /*---------------------------------------------------------------*/
     class Vector {
         float m_x = NAN, m_y = NAN, m_z = NAN;
@@ -45,6 +47,7 @@
         float m_x = NAN, m_y = NAN, m_z = NAN;
     public:
         Point(float x, float y, float z);
+        Point(const Plane& pl, const Line& l);
         Point() = default;
         Point(const Point& rhs) = default;
 
@@ -85,10 +88,16 @@
 
     public:
         Line(const Point& p, const Vector& a);
-        Line(const Point& p1, const Point& a);
+        Line(const Point& p1, const Point& p2);
         Line(const Plane& pl1, const Plane& pl2); // const?
 
         bool is_equal(const Line& rhs) const;
+        Vector get_direction() const {
+            return m_a;
+        }
+        Point get_point() const {
+            return m_p;
+        }
         void dump() const;
     };
 

@@ -14,11 +14,14 @@
 10) add computing distances from plane to point DONE 
 11) add parallel planes method
 12) add 2d triangles intersection test
-13) refactor plane::is_equal function */
+13) refactor plane::is_equal function DONE
+14) Line-plane intersection, check if parallel  */
 
 /* ASK
 1) const qualifier in plane.get_normal(), how to fix properly (or const Plane&)
-2) name resoulution conflicts */
+2) name resoulution conflicts
+3) throw an exception in constructors when, for instance when point can't be computed in 
+constructor because a plane and a line a parallel */
 int main(int argc, char** argv) {
 
     return 0;

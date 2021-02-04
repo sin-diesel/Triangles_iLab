@@ -363,32 +363,88 @@ TEST(Triangles, PlanePlaneParallel2) {
 }
 
 /*---------------------------------------------------------------*/
-TEST(Triangles, TriangleDistance) {
-    Point p1(1, 1, 1);
-    Point p2(2, 0, 1);
-    Point p3(-1, -2, 0);
+TEST(Triangles, LinePlaneIntersection) {
+    Point A(1, 1, 1);
+    Point B(2, 0, 1);
+    Point C(-1, -2, 0);
 
-    Point p4(-1, 2, 0);
-    Point p5(2, 4, 3);
-    Point p6(-4, -2, 0);
+    Point d(-1, 2, 5);
+    Point E(2, 4, 2);
+    Point F(1, -2, 0);
 
-    Point v1(4, 2, 3);
-    Point v2(-4, -2, -3);
-    Point v3(-2, 1, 0);
+    Plane P0(A, B, C);
+    Plane P1(d, E, F);
+    Triangle t(d, E, F);
 
-    Triangle t0(p1, p2, p3);
-    Triangle t1(p4, p5, p6);
+    float d1 = compute_distance(d, P0);
+    float d2 = compute_distance(E, P0);
+    float d3 = compute_distance(F, P0);
 
-    Plane pl0(t1);
+    ASSERT_FALSE((d1 > 0 && d2 > 0 && d3 > 0) || 
+        (d1 < 0 && d2 < 0 && d3 < 0));
 
-    float d1 = compute_distance(v1, pl0);
-    float d2 = compute_distance(v2, pl0);
-    float d3 = compute_distance(v3, pl0);
+    D(std::cout << "d1 = " << d1 << " d2 = " << d2 << " d3 = " << d3 << std::endl;)
 
-    D(std::cout << "Computed distances: " << d1 << ", " << d2 << ", " << d3 << std::endl);
-    ASSERT_TRUE(d1 > 0 && d2 > 0 && d3 < 0);
+    if (d1 < 0 && d2 < 0 && d3 > 0) {
+        Line l1(d, F);
+        Line l2(E, F);
+        D(l1.dump());
+        D(l2.dump());
+
+        Point intersection_point_1(P0, l1);
+        Point intersection_point_2(P0, l2);
+        D(intersection_point_1.dump());
+        D(intersection_point_2.dump());
+
+        Point ans1(0.83, -1.65, 0.43);
+        Point ans2(1.67, 2, 1.33);
+
+        D(std::cout << "Expected point 1: " << std::endl);
+        D(ans1.dump());
+
+         D(std::cout << "Expected point 2: " << std::endl);
+        D(ans2.dump());
+        ASSERT_EQ(intersection_point_1, ans1);
+        ASSERT_EQ(intersection_point_2, ans2);
+    }
 
 }
+
+/*---------------------------------------------------------------*/
+// TEST(Triangles, TrianglePlaneInterval) {
+//     Point p1(1, 1, 1);
+//     Point p2(2, 0, 1);
+//     Point p3(-1, -2, 0);
+
+//     Point p4(-1, 2, 5);
+//     Point p5(2, 4, 2);
+//     Point p6(1, -2, 0);
+
+
+//     Triangle t0(p1, p2, p3);
+//     Triangle t1(p4, p5, p6);
+
+//     Plane pl0(t1);
+
+// }
+
+/*---------------------------------------------------------------*/
+// TEST(Triangles, TrianglePlaneInterval) {
+//     Point p1(1, 1, 1);
+//     Point p2(2, 0, 1);
+//     Point p3(-1, -2, 0);
+
+//     Point p4(-1, 2, 5);
+//     Point p5(2, 4, 2);
+//     Point p6(1, -2, 0);
+
+
+//     Triangle t0(p1, p2, p3);
+//     Triangle t1(p4, p5, p6);
+
+//     Plane pl0(t1);
+
+// }
 
 
 int main(int argc, char** argv) {

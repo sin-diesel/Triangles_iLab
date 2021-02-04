@@ -17,6 +17,35 @@ bool Point::is_equal(const Point& rhs) const {
 Point::Point(float x, float y, float z): m_x(x), m_y(y), m_z(z) {};
 
 /*---------------------------------------------------------------*/
+Point::Point(const Plane& pl, const Line& l) {
+    /* check if parallel */
+    Vector normal = pl.get_normal();
+    Vector direction = l.get_direction();
+
+    float normal_module = normal.len();
+    // normalize
+    normal = normal / normal_module;
+
+    Point P = l.get_point();
+    Point p_plane = pl.get_point();
+
+    /* Calculate dot product of normal vector and direction, and also normal vector and point on plane */
+    float dot = dot_product(normal, direction);
+    float d = dot_product(normal, static_cast<Vector>(p_plane));
+
+    /* fix later */
+    assert(std::abs(dot) > TOLERANCE);
+
+    float t = (-1) * (dot_product(normal, static_cast<Vector>(P)) + d) / dot;
+
+    Vector multiplied = t * direction;
+    std::vector<float> coordinates = multiplied.get_coordinates();
+    m_x = P.m_x + coordinates[0];
+    m_y = P.m_y + coordinates[1];
+    m_z = P.m_z + coordinates[2];
+}
+
+/*---------------------------------------------------------------*/
 void Point::dump() const {
     std::cout << "Dumping point " << this << std::endl;
     std::cout <<  "(" << m_x << ", " << m_y << ", " <<
@@ -439,7 +468,7 @@ bool intersect(const Triangle& T0, const Triangle& T1) {
     /* 2) compute plane equation of lhs */
     Plane PL0(T0);
     /* 3) compute signed distances from triangle T1 to plane PL0 */
-    std::vector<Point> points = T0.get_points();
+    std::vector<Point> points = T1.get_points();
     float d1 = compute_distance(points[0], PL0);
     float d2 = compute_distance(points[1], PL0);
     float d3 = compute_distance(points[2], PL0);
@@ -458,6 +487,20 @@ bool intersect(const Triangle& T0, const Triangle& T1) {
     if (PL1.is_equal(PL0)) {
         bool intersect = intersect_2d(T0, T1);
     }
+
+    /* 7) compare distances from triangle T0 to plane PL1. If they are all 
+                            of the same sign, exit */
+    points = T0.get_points();
+    float a1 = compute_distance(points[0], PL1);
+    float a2 = compute_distance(points[1], PL1);
+    float a3 = compute_distance(points[2], PL1);
+    /* 8) if they are all of the same sign, exit */
+    if ((d1 > 0 && d2 > 0 && d3 > 0) || 
+        (d1 < 0 && d2 < 0 && d3 < 0)) {
+            return false;
+        }
+    /* Compute intersection line, use line-plane intersection */
+    Line intersection_line(PL0, PL1);
 
 
     //D(PL0.dump());
