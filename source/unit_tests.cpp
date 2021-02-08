@@ -413,22 +413,38 @@ TEST(Triangles, LinePlaneIntersection) {
 }
 
 /*---------------------------------------------------------------*/
-// TEST(Triangles, TrianglePlaneInterval) {
-//     Point p1(1, 1, 1);
-//     Point p2(2, 0, 1);
-//     Point p3(-1, -2, 0);
+TEST(Triangles, TrianglePlaneInterval) {
+    Point p1(1, 1, 1);
+    Point p2(2, 0, 1);
+    Point p3(-1, -2, 0);
 
-//     Point p4(-1, 2, 5);
-//     Point p5(2, 4, 2);
-//     Point p6(1, -2, 0);
+    Point p4(-1, 2, 5);
+    Point p5(2, 4, 2);
+    Point p6(1, -2, 0);
 
 
-//     Triangle t0(p1, p2, p3);
-//     Triangle t1(p4, p5, p6);
+    Triangle t0(p1, p2, p3);
+    Triangle t1(p4, p5, p6);
 
-//     Plane pl0(t1);
+    Plane pl1(t1);
 
-// }
+    /* intersect t0 with plane t1 */
+    std::pair<Line, Line> lines = get_lines(t0, pl1);
+    
+    /* lines which intersect plane */
+    Line l1 = lines.first;
+    Line l2 = lines.second;
+
+    D(l1.dump());
+    D(l2.dump());
+
+    // /* compute points */
+    Point intersection_point_1(pl1, l1);
+    Point intersection_point_2(pl1, l2);
+
+    D(intersection_point_1.dump());
+    D(intersection_point_2.dump());
+}
 
 /*---------------------------------------------------------------*/
 // TEST(Triangles, TrianglePlaneInterval) {

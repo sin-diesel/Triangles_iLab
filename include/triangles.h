@@ -87,6 +87,7 @@
         Vector m_a;
 
     public:
+        Line() = default;
         Line(const Point& p, const Vector& a);
         Line(const Point& p1, const Point& p2);
         Line(const Plane& pl1, const Plane& pl2); // const?
@@ -167,5 +168,8 @@
 
     /*---------------------------------------------------------------*/
     bool intersect_2d(const Triangle& T0, const Triangle& T1);
+
+    /*---------------------------------------------------------------*/
+    std::pair<Line, Line> get_lines(const Triangle& t, const Plane& pl);
 
     

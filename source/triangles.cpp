@@ -375,6 +375,42 @@ void Triangle::dump() const {
 }
 
 /*---------------------------------------------------------------*/
+std::pair<Line, Line> get_lines(const Triangle& t, const Plane& pl) {
+    std::vector<Point> points = t.get_points();
+
+    Point A = points[0];
+    Point B = points[1];
+    Point C = points[2];
+
+    float da = compute_distance(A, pl);
+    float db = compute_distance(B, pl);
+    float dc = compute_distance(C, pl);
+
+    D(std::cout << "da = " << da << std::endl);
+    D(std::cout << "db = " << db << std::endl);
+    D(std::cout << "dc = " << dc << std::endl);
+
+    /* Determine which lines intersect the plane */
+    Line l1;
+    Line l2;
+
+    if ((da < 0 && db < 0 && dc > 0) ||
+        (da > 0 && db > 0 && dc < 0) ) {
+        l1 = Line(C, A);
+        l2 = Line(C, B);
+    } else if ((da < 0 && db > 0 && dc < 0) ||
+                (da > 0 && db < 0 && dc > 0)) {
+        l1 = Line(B, A);
+        l2 = Line(B, C);
+    } else if ((da > 0 && db < 0 && dc < 0) ||
+                (da < 0 && db > 0 && dc > 0)) {
+        l1 = Line(A, B);
+        l2 = Line(A, C);
+    }
+    return std::make_pair(l1, l2);
+}
+
+/*---------------------------------------------------------------*/
 Plane::Plane(const Point& p1, const Point& p2, const Point& p3): m_p(p1) {
     m_v1 = Vector(p1, p2);
     m_v2 = Vector(p1, p3);
