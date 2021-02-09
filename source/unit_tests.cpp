@@ -413,7 +413,7 @@ TEST(Triangles, LinePlaneIntersection) {
 }
 
 /*---------------------------------------------------------------*/
-TEST(Triangles, TrianglePlaneInterval) {
+TEST(Triangles, TrianglePlaneIntervals) {
     Point p1(1, 1, 1);
     Point p2(2, 0, 1);
     Point p3(-1, -2, 0);
@@ -444,6 +444,30 @@ TEST(Triangles, TrianglePlaneInterval) {
 
     D(intersection_point_1.dump());
     D(intersection_point_2.dump());
+
+    ASSERT_EQ(intersection_point_1, Point(1.3548, 0.6452, 1.0000));
+    ASSERT_EQ(intersection_point_2, Point(1.0625, -0.6250, 0.6875));
+
+    /* Now for the second interval */
+
+    Plane pl0(t0);
+    lines = get_lines(t1, pl0);
+    
+    /* lines which intersect plane */
+    l1 = lines.first;
+    l2 = lines.second;
+    D(l1.dump());
+    D(l2.dump());
+
+    intersection_point_1 = Point(pl0, l1);
+    intersection_point_2 = Point(pl0, l2);
+
+    D(intersection_point_1.dump());
+    D(intersection_point_2.dump());
+
+    ASSERT_EQ(intersection_point_1, Point(0.8261, -1.6522, 0.4348));
+    ASSERT_EQ(intersection_point_2, Point(1.6667, 2.0000, 1.3333));
+
 }
 
 /*---------------------------------------------------------------*/
