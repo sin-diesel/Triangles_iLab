@@ -15,7 +15,11 @@
 11) add parallel planes method
 12) add 2d triangles intersection test
 13) refactor plane::is_equal function DONE
-14) Line-plane intersection, check if parallel  */
+14) Line-plane intersection, check if parallel
+15) t parameter computation, check if point is on a line
+16) fix line constructor via two planes
+17) Handle cases where to points are coincident in triangle intersecton interval computation
+18) remove code duplication in intervals test  */
 
 /* ASK
 1) const qualifier in plane.get_normal(), how to fix properly (or const Plane&)

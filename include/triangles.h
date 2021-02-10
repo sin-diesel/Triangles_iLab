@@ -172,4 +172,10 @@
     /*---------------------------------------------------------------*/
     std::pair<Line, Line> get_lines(const Triangle& t, const Plane& pl);
 
+    /* Computes the value for t parameter for a point p on line l */
+    /*---------------------------------------------------------------*/
+    float compute_parameter(const Point& p, const Line& l);
+
+    std::vector<float> compute_intervals(const Line& l, const Triangle& T0, const Triangle& T1);
+
     

@@ -427,6 +427,10 @@ TEST(Triangles, TrianglePlaneIntervals) {
     Triangle t1(p4, p5, p6);
 
     Plane pl1(t1);
+    Plane pl0(t0);
+
+    /* compute intersection line */
+    Line intersection_line(pl0, pl1);
 
     /* intersect t0 with plane t1 */
     std::pair<Line, Line> lines = get_lines(t0, pl1);
@@ -435,58 +439,101 @@ TEST(Triangles, TrianglePlaneIntervals) {
     Line l1 = lines.first;
     Line l2 = lines.second;
 
-    D(l1.dump());
-    D(l2.dump());
+    //D(l1.dump());
+    //D(l2.dump());
 
     // /* compute points */
     Point intersection_point_1(pl1, l1);
     Point intersection_point_2(pl1, l2);
 
-    D(intersection_point_1.dump());
-    D(intersection_point_2.dump());
+    //D(intersection_point_1.dump());
+    //D(intersection_point_2.dump());
 
     ASSERT_EQ(intersection_point_1, Point(1.3548, 0.6452, 1.0000));
     ASSERT_EQ(intersection_point_2, Point(1.0625, -0.6250, 0.6875));
 
-    /* Now for the second interval */
+     /* compute parameter values */
+    float t00 = compute_parameter(intersection_point_1, intersection_line);
+    float t01 = compute_parameter(intersection_point_2, intersection_line);
+    D(std::cout << "t00 = " << t00 << std::endl);
+    D(std::cout << "t01 = " << t01 << std::endl);
+    ASSERT_TRUE(std::abs(t00 - 0.008575) < TOLERANCE);
+    ASSERT_TRUE(std::abs(t01 - (-0.001506)) < TOLERANCE);
 
-    Plane pl0(t0);
+    /* Now for the second triangle */
+
     lines = get_lines(t1, pl0);
-    
-    /* lines which intersect plane */
     l1 = lines.first;
     l2 = lines.second;
-    D(l1.dump());
-    D(l2.dump());
 
     intersection_point_1 = Point(pl0, l1);
     intersection_point_2 = Point(pl0, l2);
 
     D(intersection_point_1.dump());
     D(intersection_point_2.dump());
+    D(intersection_line.dump());
 
     ASSERT_EQ(intersection_point_1, Point(0.8261, -1.6522, 0.4348));
-    ASSERT_EQ(intersection_point_2, Point(1.6667, 2.0000, 1.3333));
+    ASSERT_EQ(intersection_point_2, Point(1.6667, 2, 1.3333));
+
+    float t10 = compute_parameter(intersection_point_1, intersection_line);
+    float t11 = compute_parameter(intersection_point_2, intersection_line);
+    D(std::cout << "t10 = " << t10 << std::endl);
+    D(std::cout << "t11 = " << t11 << std::endl);
+    ASSERT_TRUE(std::abs(t10 - (-0.009658)) < TOLERANCE);
+    ASSERT_TRUE(std::abs(t11 - 0.019327) < TOLERANCE);
+
+    /* now compare the t parameters */
+
+    D(std::cout << "t00 = " << t00 << std::endl);
+    D(std::cout << "t01 = " << t01 << std::endl);
+    D(std::cout << "t10 = " << t10 << std::endl);
+    D(std::cout << "t11 = " << t11 << std::endl);
+    
+    bool intersect = true;
+
+    if (std::min(t10, t11) > std::max(t00, t01) || std::min(t00, t01) > std::max(t10, t11)) {
+        intersect = false;
+    }
+
+    ASSERT_EQ(intersect, true);
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, TrianglePlaneIntersection1) {
+    Point p1(1, 1, 1);
+    Point p2(2, 0, 1);
+    Point p3(-1, -2, 0);
+
+    Point p4(-1, 2, 5);
+    Point p5(2, 4, 2);
+    Point p6(1, -2, 0);
+
+
+    Triangle t0(p1, p2, p3);
+    Triangle t1(p4, p5, p6);
+
+    ASSERT_TRUE(intersect(t0, t1));
 
 }
 
 /*---------------------------------------------------------------*/
-// TEST(Triangles, TrianglePlaneInterval) {
-//     Point p1(1, 1, 1);
-//     Point p2(2, 0, 1);
-//     Point p3(-1, -2, 0);
+TEST(Triangles, TrianglePlaneIntersection2) {
+    Point p1(0, 0, 0);
+    Point p2(1, 1, 1);
+    Point p3(-1, 1, 1);
 
-//     Point p4(-1, 2, 5);
-//     Point p5(2, 4, 2);
-//     Point p6(1, -2, 0);
+    Point p4(-1, 1, 0);
+    Point p5(-3, -3, -3);
+    Point p6(2, 1, 2);
 
 
-//     Triangle t0(p1, p2, p3);
-//     Triangle t1(p4, p5, p6);
+    Triangle t0(p1, p2, p3);
+    Triangle t1(p4, p5, p6);
 
-//     Plane pl0(t1);
+    ASSERT_TRUE(intersect(t0, t1));
 
-// }
+}
 
 
 int main(int argc, char** argv) {
