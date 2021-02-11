@@ -414,14 +414,14 @@ std::pair<Line, Line> get_lines(const Triangle& t, const Plane& pl) {
     }
     /* handle cases where point belongs to a plane */
     if (std::abs(da) < TOLERANCE) {
-        l1 = Line(A, B);
-        l2 = Line(A, C);
-    } else if (std::abs(db) < TOLERANCE) {
         l1 = Line(B, A);
         l2 = Line(B, C);
+    } else if (std::abs(db) < TOLERANCE) {
+        l1 = Line(A, B);
+        l2 = Line(A, C);
     } else if (std::abs(dc) < TOLERANCE) {
-        l1 = Line(C, A);
-        l2 = Line(C, B);
+        l1 = Line(A, C);
+        l2 = Line(A, B);
     }
     return std::make_pair(l1, l2);
 }
@@ -597,6 +597,8 @@ std::vector<float> compute_intervals(const Line& l, const Triangle& T0, const Tr
     D(std::cout << "\n\n\n");
     float t00 = compute_parameter(intersection_point_1, l);
     float t01 = compute_parameter(intersection_point_2, l);
+    D(std::cout << "t00 = " << t00 << std::endl);
+    D(std::cout << "t01 = " << t01 << std::endl);
 
     /* Now for the second triangle */
 
@@ -619,6 +621,8 @@ std::vector<float> compute_intervals(const Line& l, const Triangle& T0, const Tr
     D(std::cout << "\n\n\n");
     float t10 = compute_parameter(intersection_point_1, l);
     float t11 = compute_parameter(intersection_point_2, l);
+    D(std::cout << "t10 = " << t10 << std::endl);
+    D(std::cout << "t11 = " << t11 << std::endl);
 
     /* now compare the t parameters */
 
@@ -651,6 +655,12 @@ bool intersect(const Triangle& T0, const Triangle& T1) {
     float d1 = compute_distance(points[0], PL0);
     float d2 = compute_distance(points[1], PL0);
     float d3 = compute_distance(points[2], PL0);
+
+    /* Handle case where single point belongs to triangle plane */
+    if (std::abs(d1) < TOLERANCE || std::abs(d2) < TOLERANCE || std::abs(d3) < TOLERANCE) {
+        return false;
+    }
+
     /* 4) if they are all of the same sign, exit */
     if ((d1 > 0 && d2 > 0 && d3 > 0) || 
         (d1 < 0 && d2 < 0 && d3 < 0)) {
@@ -686,6 +696,12 @@ bool intersect(const Triangle& T0, const Triangle& T1) {
     float a1 = compute_distance(points[0], PL1);
     float a2 = compute_distance(points[1], PL1);
     float a3 = compute_distance(points[2], PL1);
+
+    /* Handle case where single point belongs to triangle plane */
+    if (std::abs(d1) < TOLERANCE || std::abs(d2) < TOLERANCE || std::abs(d3) < TOLERANCE) {
+        return false;
+    }
+    
     /* 8) if they are all of the same sign, exit */
     if ((d1 > 0 && d2 > 0 && d3 > 0) || 
         (d1 < 0 && d2 < 0 && d3 < 0)) {

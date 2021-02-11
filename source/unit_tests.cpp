@@ -521,7 +521,7 @@ TEST(Triangles, TrianglePlaneIntersection1) {
 TEST(Triangles, TrianglePlaneIntersection2) {
     Point p1(0, 0, 0);
     Point p2(1, 1, 1);
-    Point p3(-1, 1, 1);
+    Point p3(-1, 2, 1);
 
     Point p4(-1, 1, 0);
     Point p5(-3, -3, -3);
@@ -531,6 +531,135 @@ TEST(Triangles, TrianglePlaneIntersection2) {
     Triangle t0(p1, p2, p3);
     Triangle t1(p4, p5, p6);
 
+    ASSERT_FALSE(intersect(t0, t1));
+
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, TrianglePlaneIntersection3) {
+    Point p1(1, 0, 0);
+    Point p2(1, 1, 1);
+    Point p3(-1, 2, 1);
+
+    Point p4(-2, 1, 0);
+    Point p5(-3, -3, -3);
+    Point p6(2, 1, 2);
+
+
+    Triangle t0(p1, p2, p3);
+    Triangle t1(p4, p5, p6);
+
+    ASSERT_FALSE(intersect(t0, t1));
+
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, TrianglePlaneIntersection4) {
+    Point p1(1, 0, 0);
+    Point p2(1, 1, 1);
+    Point p3(-1, 2, 1);
+
+    Point p4(0, 1, 0);
+    Point p5(-3, -3, -3);
+    Point p6(2, 1, 2);
+
+
+    Triangle t0(p1, p2, p3);
+    Triangle t1(p4, p5, p6);
+
+    ASSERT_TRUE(intersect(t0, t1));
+
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, TrianglePlaneIntersection5) {
+    Point p1(1, 0, 0);
+    Point p2(1, 1, 1);
+    Point p3(-1, 2, 1);
+
+    Point p4(-1, 1, 0);
+    Point p5(-3, -3, -3);
+    Point p6(2, 1, 2);
+
+
+    Triangle t0(p1, p2, p3);
+    Triangle t1(p4, p5, p6);
+
+    ASSERT_FALSE(intersect(t0, t1));
+
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, TrianglePlaneIntersection6) {
+    Point p1(1, 0, 0);
+    Point p2(1, 1, 1);
+    Point p3(-1, 2, 1);
+
+    Point p4(-1.1, 1, 0);
+    Point p5(-3, -3, -3);
+    Point p6(2, 1, 2);
+
+
+    Triangle t0(p1, p2, p3);
+    Triangle t1(p4, p5, p6);
+
+    ASSERT_FALSE(intersect(t0, t1));
+
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, TrianglePlaneIntersection7) {
+    Point p1(1, 0, 0);
+    Point p2(1, 1, 1);
+    Point p3(-1, 2, 1);
+
+    Point p4(-1, 1.1, 0);
+    Point p5(-3, -3, -3);
+    Point p6(2, 1, 2);
+
+
+    Triangle t0(p1, p2, p3);
+    Triangle t1(p4, p5, p6);
+
+    ASSERT_FALSE(intersect(t0, t1));
+
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, TrianglePlaneIntersection8) {
+    Point p1(1, 0, 0);
+    Point p2(1, 1, 1);
+    Point p3(-1, 2, 1);
+
+    Point p4(0, 1, 0.5);
+    Point p5(-3, -3, -3);
+    Point p6(2, 1, 2);
+
+
+    Triangle t0(p1, p2, p3);
+    Triangle t1(p4, p5, p6);
+
+    /* Actually vertex belongs to the side of another triangle, this is yet to be decided whether to considet it
+    an intersection or not */
+    ASSERT_FALSE(intersect(t0, t1));
+
+}
+
+/*---------------------------------------------------------------*/
+TEST(Triangles, TrianglePlaneIntersection9) {
+    Point p1(1, 0, 0);
+    Point p2(1, 1, 1);
+    Point p3(-1, 2, 1);
+
+    Point p4(0, 1.01, 0.5);
+    Point p5(-3, -3, -3);
+    Point p6(2, 1, 2);
+
+
+    Triangle t0(p1, p2, p3);
+    Triangle t1(p4, p5, p6);
+
+    /* Here just slightly varying the 1.01 value, we get intersection segment */
     ASSERT_TRUE(intersect(t0, t1));
 
 }
