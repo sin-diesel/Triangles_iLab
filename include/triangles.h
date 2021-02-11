@@ -178,4 +178,6 @@
 
     std::vector<float> compute_intervals(const Line& l, const Triangle& T0, const Triangle& T1);
 
+    void input();
+
     

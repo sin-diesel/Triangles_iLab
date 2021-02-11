@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "triangles.h"
 
 /* TODO 
@@ -27,6 +28,31 @@
 3) throw an exception in constructors when, for instance when point can't be computed in 
 constructor because a plane and a line a parallel */
 int main(int argc, char** argv) {
+
+    int N = 0;
+    float x = NAN;
+    float y = NAN;
+    float z = NAN;
+
+    std::cin >> N;
+
+    D(std::cout << "Number of triangles: " << N << std::endl);
+
+    std::vector<Triangle> triangles;
+    std::vector<Point> points;
+
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            std::cin >> x;
+            std::cin >> y;
+            std::cin >> z;
+            points.push_back(Point(x, y, z));
+        }
+        triangles.push_back(Triangle(points[0], points[1], points[2]));
+        points.clear();
+        D(std::cout << "Triangle [" << i << "] = \n\n\n");
+        D(triangles[i].dump());
+    }
 
     return 0;
 }
